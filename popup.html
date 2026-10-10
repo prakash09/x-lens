@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>X Lens</title><link rel="stylesheet" href="popup.css"></head>
+<body><header><span class="globe">🌐</span><div><h1>X Lens</h1><p>See the context behind the account.</p></div></header>
+<main><label><span>Country beside names<small>Use X’s “Account based in” field.</small></span><input type="checkbox" id="showCountry"></label>
+<label><span>Load new countries<small>Optional. Shared limit: 10 lookups/hour.</small></span><input type="checkbox" id="autoLookup"></label>
+<h2>Optional filters</h2>
+<label><span>Account age<small>Hide accounts younger than:</small></span><select id="minimumAgeMonths"><option value="0">Off</option><option value="6">6 months</option><option value="12">1 year</option><option value="24">2 years</option><option value="60">5 years</option></select></label>
+<label><span>Connected via Android<small>Match X’s account connection field.</small></span><input type="checkbox" id="hideAndroid"></label>
+<div class="note">Filtered posts can be revealed. Missing information stays visible. This does not block or mute anyone.</div>
+<button id="clearCache" type="button">Refresh saved account details</button><p id="status" role="status">Settings stay in this browser.</p></main>
+<footer>No external server. No analytics.</footer><script src="model.js"></script><script src="popup.js"></script></body></html>

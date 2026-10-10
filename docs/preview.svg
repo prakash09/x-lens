@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="470" viewBox="0 0 1040 470" role="img" aria-labelledby="title desc">
+<title id="title">X Lens — see the context behind the account</title><desc id="desc">Illustration of a post with an India country badge and optional account age and Android filters. All names and content are fictional.</desc>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0b1220"/><stop offset="1" stop-color="#131e2f"/></linearGradient><linearGradient id="accent"><stop stop-color="#7dd3fc"/><stop offset="1" stop-color="#a5b4fc"/></linearGradient></defs>
+<rect width="1040" height="470" rx="24" fill="url(#bg)"/>
+<circle cx="960" cy="30" r="200" fill="#38bdf8" opacity=".035"/>
+<g font-family="system-ui,Segoe UI,sans-serif">
+<text x="52" y="64" fill="#7dd3fc" font-size="13" letter-spacing="3">A CLEARER VIEW OF X</text>
+<text x="52" y="121" fill="#f1f5f9" font-size="45" font-weight="700">See who’s behind the post.</text>
+<text x="54" y="157" fill="#94a3b8" font-size="17">Country context. Optional filters. All in your browser.</text>
+<rect x="52" y="197" width="584" height="216" rx="18" fill="#0b111a" stroke="#27364a"/>
+<circle cx="96" cy="243" r="23" fill="#243a50"/><text x="85" y="251" fill="#bae6fd" font-size="22">A</text>
+<text x="135" y="239" fill="#f1f5f9" font-size="18" font-weight="650">Asha</text>
+<rect x="198" y="218" width="93" height="30" rx="7" fill="#14283a" stroke="#33536c"/>
+<rect x="210" y="225" width="21" height="5" fill="#ff9933"/><rect x="210" y="230" width="21" height="5" fill="#fff"/><rect x="210" y="235" width="21" height="5" fill="#138808"/><circle cx="220.5" cy="232.5" r="2" fill="#000080"/>
+<text x="239" y="239" fill="#bae6fd" font-size="13">India</text>
+<text x="135" y="263" fill="#718399" font-size="13">@example_asha · illustrative preview</text>
+<text x="80" y="310" fill="#e2e8f0" font-size="19">A little context makes a better feed.</text>
+<path d="M80 337H607" stroke="#1d2c3e"/>
+<text x="80" y="371" fill="#94a3b8" font-size="13">X’s account country, beside the name.</text>
+<rect x="668" y="197" width="320" height="216" rx="18" fill="#101b2a" stroke="#27364a"/>
+<text x="692" y="234" fill="#f1f5f9" font-size="20" font-weight="650">Your feed. Your filters.</text>
+<text x="692" y="272" fill="#94a3b8" font-size="13">Hide accounts younger than</text>
+<rect x="692" y="286" width="272" height="35" rx="7" fill="#17283c" stroke="#35516a"/>
+<text x="706" y="309" fill="#bae6fd" font-size="14">Off · 6mo · 1yr · 2yr · 5yr</text>
+<rect x="692" y="345" width="17" height="17" rx="4" fill="#17283c" stroke="#526d85"/>
+<text x="720" y="359" fill="#cbd5e1" font-size="13">Connected via Android</text>
+<text x="692" y="390" fill="#718399" font-size="12">Optional. Reversible. Local.</text>
+<text x="54" y="447" fill="#7dd3fc" font-size="12" letter-spacing="2">X LENS</text><text x="760" y="447" fill="#718399" font-size="12">No server · No analytics</text>
+</g></svg>
