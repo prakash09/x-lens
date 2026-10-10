@@ -130,7 +130,7 @@ The main and isolated execution worlds use distinct script paths. Run `npm run b
 
 ### Validation
 
-27 automated checks cover calendar boundaries, leap days, missing data, Android matching, account identity, safe text rendering, independent quote filtering, restoring posts, request deduplication, rate-limit pauses, prefetch before DOM requests, cache reuse, manifest/bundle consistency, extension reload errors, independent layout switches, sidebar scope, navigation, and switching to Following.
+28 automated checks cover calendar boundaries, leap days, missing data, Android matching, account identity, safe text rendering, independent quote filtering, restoring posts, request deduplication, rate-limit pauses, prefetch before DOM requests, cache reuse, manifest/bundle consistency, extension reload errors, independent layout switches, sidebar scope, navigation, and switching to Following.
 
 Live Chrome checks confirmed country badges, both filter types, restoring posts, and the age selector. Mobile widths and X’s light theme have not been visually verified. There is no claim that X’s internal endpoint will remain stable. Background lookups are now off by default after a live rate-limit report.
 

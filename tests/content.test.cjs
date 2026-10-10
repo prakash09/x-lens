@@ -143,3 +143,26 @@ test('extension reload does not throw when saving settings', async () => {
     assert.match(window.document.getElementById('xac-status').textContent, /Refresh X to reconnect/);
   } finally { dom.window.close(); }
 });
+
+test('news card stays hidden while stories load and after heading text updates', async () => {
+  const { dom, window, settings } = await setup();
+  try {
+    const sidebar = window.document.createElement('aside');
+    sidebar.dataset.testid = 'sidebarColumn';
+    sidebar.innerHTML = `<section id="loading-news"><div><h2>Loading</h2></div><div role="progressbar"></div></section><section id="suggestions"><h2>Who to follow</h2><a href="/example">Example</a></section>`;
+    window.document.body.append(sidebar);
+    await settings({ hideNews: true });
+    sidebar.querySelector('h2').firstChild.data = 'Today’s News';
+    await pause(80);
+    assert.equal(window.getComputedStyle(window.document.getElementById('loading-news')).display, 'none');
+    assert.notEqual(window.getComputedStyle(window.document.getElementById('suggestions')).display, 'none');
+    const story = window.document.createElement('div');
+    story.setAttribute('role', 'link');
+    story.textContent = 'A news story';
+    window.document.getElementById('loading-news').lastElementChild.replaceWith(story);
+    await pause(80);
+    assert.equal(window.getComputedStyle(window.document.getElementById('loading-news')).display, 'none');
+    await settings({ hideNews: false });
+    assert.notEqual(window.getComputedStyle(window.document.getElementById('loading-news')).display, 'none');
+  } finally { dom.window.close(); }
+});

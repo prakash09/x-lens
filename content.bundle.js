@@ -199,8 +199,9 @@
         // Hide the card with its links, not the heading or the whole sidebar.
         for (let card = heading.parentElement; card && card !== sidebar; card = card.parentElement) {
           const links = [...card.querySelectorAll('a[href], [role="link"]')].filter(link => !heading.contains(link));
-          if (!links.length) continue;
           if (card.querySelectorAll('h1, h2, [role="heading"][aria-level="1"], [role="heading"][aria-level="2"]').length > 1) break;
+          const content = [...card.children].filter(child => !child.contains(heading) && !child.matches('button, [role="button"], [aria-label="Close"]'));
+          if (!links.length && !content.length && !card.matches('section, aside')) continue;
           card.setAttribute('data-xac-section', section);
           break;
         }
@@ -356,8 +357,8 @@
     await warmup;
     mountControls();
     new MutationObserver(mutations => {
-      if (mutations.some(mutation => !mutation.target.closest?.('#xac-controls, .xac-badge, .xac-placeholder'))) scheduleScan();
-    }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['aria-selected'] });
+      if (mutations.some(mutation => !(mutation.target.nodeType === Node.TEXT_NODE ? mutation.target.parentElement : mutation.target).closest?.('#xac-controls, .xac-badge, .xac-placeholder'))) scheduleScan();
+    }).observe(document.body, { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ['aria-selected', 'role', 'href'] });
     window.addEventListener('scroll', scheduleScan, { passive: true });
     scan();
   }
