@@ -25,7 +25,7 @@ X Lens puts the country from X’s **About this account** page beside the author
 | **Android filter** | Hide posts from accounts whose “Connected via” field includes Android. |
 | **Hide distractions** | Separate switches for For you, Today’s News, and What’s happening. |
 | **Show post** | Reveal any filtered post. Quotes can be filtered separately. |
-| **Optional early lookups** | Prefetch before posts render when enabled. Background requests are off by default. |
+| **Automatic country lookups** | Load details for nearby posts, with shared caching and paced requests. |
 | **Local cache** | Reuse saved details for 24 hours without repeated lookups. |
 
 ## Install from GitHub
@@ -61,7 +61,7 @@ Load the `x-lens` folder in Chrome with the same steps above. The generated bund
 ## Use it your way
 
 - **Hover a country badge** to see the reported country, connection source, and join date. Click the badge to open that account’s About page.
-- **Leave Load new countries off** for zero background About requests. Turn it on only when needed; all tabs share a small hourly budget.
+- **Countries load automatically** for accounts near the screen. There is no separate lookup switch. Fresh cached results skip the request.
 - **Choose an account age** to hide younger accounts. Choose **Off** to restore them. An account exactly at the cutoff stays visible. Unknown, invalid, or future join dates stay visible.
 - **Enable Connected via Android** to match that specific field from X. This does not prove the account was created on Android or that the current post came from Android.
 - **Hide distractions** with three separate switches. Hiding a selected **For you** tab switches Home to **Following**. The sidebar switches hide the **Today’s News** and **What’s happening** cards and preserve other sections. Turn each switch off to restore it. These labels currently match X’s English interface.
@@ -71,11 +71,11 @@ The country is X’s reported account base. It is not citizenship, the profile�
 
 ## How it works
 
-X Lens reads account metadata from X’s own responses without adding requests by default. Cached countries and join dates still work. Opening an account’s About page lets X load its details; X Lens saves the result.
+X Lens reads account metadata from X’s own responses and looks up missing About details automatically for posts on screen and up to two screens ahead. This includes reply and quote authors. It does not request every account in a fetched timeline.
 
-Enable **Load new countries** only if you want background requests. It can queue accounts from feed responses before post elements render. Page changes coalesce into one scan per frame. Settings and cached details begin loading at document start.
+All X tabs share one lookup at a time, with a one-second delay between requests. Repeated authors use the same cached result. The cache holds up to 1,000 accounts for 24 hours and survives refreshes. A worker restart retains the request spacing and active-request lease. X rate limits pause requests for at least 15 minutes, or longer if X reports a later reset. There is no hourly account cap imposed by the extension.
 
-Optional lookups run one at a time, at least 15 seconds apart, with a shared maximum of 10 per hour across all tabs. The budget persists through refreshes and worker restarts. A page session also stops at 10 requests. This conservative limit is an extension setting, not a promise about X’s allowance. The cache holds up to 1,000 accounts for 24 hours. Cached labels can appear as rows render. First-time labels still depend on X’s response time and request limits.
+Page changes coalesce into one scan per frame. Settings and cached details begin loading at document start. Cached labels can appear as rows render. First-time labels depend on X’s response time, the queue, and request limits.
 
 X Lens uses X’s internal `AboutAccountQuery`, with a fallback query path and discovery from X’s own requests. It reads the session headers from those requests in page memory. No authentication token is included in this repository. X can change or restrict this endpoint.
 
@@ -87,7 +87,6 @@ X Lens uses X’s internal `AboutAccountQuery`, with a fallback query path and d
 | Lookups paused or a rate-limit message | Wait for the pause to expire. Rate limits pause requests for at least 15 minutes; cached details still work. |
 | X returned 401, 403, or 404 | Open an account’s About page and refresh X. These errors pause lookups for 5 minutes. |
 | Old saved details | Click **Refresh saved account details** in the popup, then refresh X to clear its in-memory cache. |
-| Lookup budget reached | Wait for the hourly window. Refreshing does not reset the shared budget. |
 
 A failed lookup never makes an account match a filter.
 
@@ -120,7 +119,7 @@ npm test
 | `model.js` | Account parsing, country flags, calendar cutoffs, and settings migration. |
 | `page.js` | Read X responses, capture request headers, and pace optional lookups. |
 | `page.bundle.js`, `content.bundle.js` | Generated bundles for both execution worlds. Keep them committed. |
-| `background.js` | Serialize lookup reservations and persist a shared request budget. |
+| `background.js` | Coordinate requests and merge the shared account cache. |
 | `content.js`, `content.css` | Country badges, local filters, and page controls. |
 | `popup.html`, `popup.css`, `popup.js` | Toolbar popup and settings. |
 | `manifest.json` | Scope, execution worlds, permissions, and runtime files. |
@@ -130,9 +129,9 @@ The main and isolated execution worlds use distinct script paths. Run `npm run b
 
 ### Validation
 
-28 automated checks cover calendar boundaries, leap days, missing data, Android matching, account identity, safe text rendering, independent quote filtering, restoring posts, request deduplication, rate-limit pauses, prefetch before DOM requests, cache reuse, manifest/bundle consistency, extension reload errors, independent layout switches, sidebar scope, navigation, and switching to Following.
+30 automated checks cover calendar boundaries, leap days, missing data, Android matching, account identity, safe text rendering, independent quote filtering, restoring posts, request deduplication, rate-limit pauses, near-screen lookups, automatic defaults, cross-tab cache reuse, manifest/bundle consistency, extension reload errors, independent layout switches, sidebar scope, navigation, and switching to Following.
 
-Live Chrome checks confirmed country badges, both filter types, restoring posts, and the age selector. Mobile widths and X’s light theme have not been visually verified. There is no claim that X’s internal endpoint will remain stable. Background lookups are now off by default after a live rate-limit report.
+Live Chrome checks confirmed country badges, both filter types, restoring posts, and the age selector. Mobile widths and X’s light theme have not been visually verified. There is no claim that X’s internal endpoint will remain stable. Automatic lookups pause on X rate-limit responses.
 
 Manual checks:
 

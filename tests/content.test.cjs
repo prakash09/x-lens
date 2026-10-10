@@ -14,7 +14,7 @@ async function setup() {
   window.document.head.append(style);
   let listener;
   window.Intl.DisplayNames = Intl.DisplayNames;
-  window.chrome = { storage: { local: { get: async () => ({}), set: async () => {} }, onChanged: { addListener: fn => { listener = fn; } } } };
+  window.chrome = { runtime: { sendMessage: async () => ({ allowed: false }) }, storage: { local: { get: async () => ({}), set: async () => {} }, onChanged: { addListener: fn => { listener = fn; } } } };
   for (const file of ['content.bundle.js']) window.eval(fs.readFileSync(path.join(root, file), 'utf8'));
   await pause(180);
   const record = (handle, source, createdAt, country = 'India') => window.dispatchEvent(new window.MessageEvent('message', { origin: window.location.origin, source: window, data: { channel: 'x-account-context-v1', type: 'account', account: { handle, source, createdAt, country, observedAt: Date.now(), aboutChecked: true } } }));

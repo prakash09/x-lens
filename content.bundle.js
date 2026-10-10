@@ -1,5 +1,5 @@
 (() => {
-  const defaults = Object.freeze({ showCountry: true, autoLookup: false, minimumAgeMonths: 0, hideAndroid: false, hideForYou: false, hideNews: false, hideTrending: false });
+  const defaults = Object.freeze({ showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideForYou: false, hideNews: false, hideTrending: false });
   const validHandle = value => typeof value === 'string' && /^[a-zA-Z0-9_]{1,15}$/.test(value);
   const shortText = value => typeof value === 'string' && value.length <= 120 ? value.trim() : null;
   function parseAccount(user, requested) {
@@ -20,7 +20,7 @@
   const ageOptions = Object.freeze({ 0: 'Off', 6: '6 months', 12: '1 year', 24: '2 years', 60: '5 years' });
   function normalizeSettings(value = {}) {
     const months = value.minimumAgeMonths ?? (value.hideRecent ? 6 : 0);
-    return { showCountry: value.showCountry !== false, autoLookup: value.autoLookup === true, minimumAgeMonths: Object.hasOwn(ageOptions, months) ? Number(months) : 0, hideAndroid: value.hideAndroid === true, hideForYou: value.hideForYou === true, hideNews: value.hideNews === true, hideTrending: value.hideTrending === true };
+    return { showCountry: value.showCountry !== false, minimumAgeMonths: Object.hasOwn(ageOptions, months) ? Number(months) : 0, hideAndroid: value.hideAndroid === true, hideForYou: value.hideForYou === true, hideNews: value.hideNews === true, hideTrending: value.hideTrending === true };
   }
   function monthsAgo(now, months) {
     const date = new Date(now);
@@ -83,16 +83,16 @@
     try { await chrome.storage.local.set(values); }
     catch (error) { storageFailed(error); }
   }
-  async function requestPermit() {
-    if (!settings.autoLookup) return { allowed: false };
-    try { return await chrome.runtime.sendMessage({ type: 'permitLookup' }); }
+  async function requestPermit(handle) {
+    try { return await chrome.runtime.sendMessage({ type: 'permitLookup', handle }); }
     catch (error) { storageFailed(error); return { allowed: false }; }
   }
   function saveCache() {
     clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
       const cache = [...accounts.values()].filter(fresh).slice(-1000);
-      store({ cache });
+      try { chrome.runtime.sendMessage({ type: 'cacheAccounts', accounts: cache }).catch(storageFailed); }
+      catch (error) { storageFailed(error); }
     }, 1000);
   }
   function handleFor(header) {
@@ -105,7 +105,7 @@
     return match?.[1]?.toLowerCase() || null;
   }
   function lookup(handle) {
-    if (!settings.autoLookup || (!settings.showCountry && !settings.hideAndroid)) return;
+    if (!settings.showCountry && !settings.hideAndroid) return;
     const account = accounts.get(handle);
     if (fresh(account) && account.aboutChecked) return;
     const last = requested.get(handle);
@@ -242,7 +242,7 @@
     const title = document.createElement('strong');
     title.textContent = 'X Lens';
     panel.append(title);
-    for (const [key, text] of Object.entries({ showCountry: 'Show country beside names', autoLookup: 'Load new countries (10 lookups/hour)', hideAndroid: 'Hide accounts connected via Android', hideForYou: 'Hide For you tab', hideNews: 'Hide Today’s News', hideTrending: 'Hide What’s happening' })) {
+    for (const [key, text] of Object.entries({ showCountry: 'Show country beside names', hideAndroid: 'Hide accounts connected via Android', hideForYou: 'Hide For you tab', hideNews: 'Hide Today’s News', hideTrending: 'Hide What’s happening' })) {
       const label = document.createElement('label');
       const input = document.createElement('input');
       input.type = 'checkbox';
@@ -294,8 +294,12 @@
     if (event.source !== window || event.origin !== location.origin || event.data?.channel !== channel) return;
     const message = event.data;
     if (message.type === 'requestPermit' && typeof message.id === 'string' && message.id.length < 80) {
-      const reply = requestPermit();
-      reply.then(permit => send('permit', { id: message.id, allowed: permit?.allowed === true, until: permit?.until }));
+      const reply = requestPermit(message.handle);
+      reply.then(permit => send('permit', { id: message.id, allowed: permit?.allowed === true, until: permit?.until, account: permit?.account }));
+    }
+    if (message.type === 'lookupFinished' && model.validHandle(message.handle)) {
+      try { chrome.runtime.sendMessage({ type: 'finishLookup', handle: message.handle, account: accounts.get(message.handle) }).catch(storageFailed); }
+      catch (error) { storageFailed(error); }
     }
     if (message.type === 'account') {
       const account = message.account;
