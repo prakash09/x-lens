@@ -198,7 +198,7 @@
         if (!section) continue;
         // Hide the card with its links, not the heading or the whole sidebar.
         for (let card = heading.parentElement; card && card !== sidebar; card = card.parentElement) {
-          const links = [...card.querySelectorAll('a[href]')].filter(link => !heading.contains(link));
+          const links = [...card.querySelectorAll('a[href], [role="link"]')].filter(link => !heading.contains(link));
           if (!links.length) continue;
           if (card.querySelectorAll('h1, h2, [role="heading"][aria-level="1"], [role="heading"][aria-level="2"]').length > 1) break;
           card.setAttribute('data-xac-section', section);

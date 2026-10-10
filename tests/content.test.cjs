@@ -71,7 +71,7 @@ test('untrusted country is text, not executable HTML', async () => {
 });
 function distractions(window) {
   const layout = window.document.createElement('div');
-  layout.innerHTML = `<main data-testid="primaryColumn"><nav role="tablist"><a role="tab" aria-selected="true" href="/home" id="for-you">For you</a><a role="tab" aria-selected="false" href="/home" id="following">Following</a></nav><article id="unrelated-post"><h2>Today's News</h2><a href="/example">A post with the same words</a></article></main><aside data-testid="sidebarColumn"><div id="news"><div><h2>Today’s News<span aria-label="Close">Close</span></h2></div><a href="/i/news/one"><h3>A news story</h3></a></div><section id="trends"><div><h2>What’s happening</h2></div><a href="/search?q=topic">A trend</a></section><section id="follow"><h2>Who to follow</h2><a href="/example">A suggested account</a></section></aside>`;
+  layout.innerHTML = `<main data-testid="primaryColumn"><nav role="tablist"><a role="tab" aria-selected="true" href="/home" id="for-you">For you</a><a role="tab" aria-selected="false" href="/home" id="following">Following</a></nav><article id="unrelated-post"><h2>Today's News</h2><a href="/example">A post with the same words</a></article></main><aside data-testid="sidebarColumn"><div id="news"><div><h2>Today’s News<span aria-label="Close">Close</span></h2></div><div role="link" tabindex="0"><h3>A news story</h3></div></div><section id="trends"><div><h2>What’s happening</h2></div><a href="/search?q=topic">A trend</a></section><section id="follow"><h2>Who to follow</h2><a href="/example">A suggested account</a></section></aside>`;
   window.document.body.append(layout);
   const following = window.document.getElementById('following');
   let clicks = 0;
