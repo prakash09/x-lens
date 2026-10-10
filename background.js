@@ -1,7 +1,7 @@
 (() => {
   let pending = Promise.resolve();
   const validHandle = handle => typeof handle === 'string' && /^[a-zA-Z0-9_]{1,15}$/.test(handle);
-  const fresh = record => record && validHandle(record.handle) && Number.isFinite(record.observedAt) && record.observedAt <= Date.now() && Date.now() - record.observedAt < 86400000;
+  const fresh = record => record && validHandle(record.handle) && Number.isFinite(record.observedAt) && record.observedAt <= Date.now() && Date.now() - record.observedAt < 31536000000;
   function clean(record) {
     if (!fresh(record)) return null;
     return {

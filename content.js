@@ -10,7 +10,7 @@
   let switchingToFollowing = false;
   let statusText = 'Loading account details…';
   const send = (type, value) => window.postMessage({ channel, type, ...value }, location.origin);
-  const fresh = record => record && Number.isFinite(record.observedAt) && Date.now() - record.observedAt < 86400000;
+  const fresh = record => record && Number.isFinite(record.observedAt) && Date.now() - record.observedAt < 31536000000;
   function storageFailed(error) {
     statusText = error?.message?.includes('Extension context invalidated')
       ? 'X Lens updated. Refresh X to reconnect.'

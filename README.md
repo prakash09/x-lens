@@ -26,7 +26,7 @@ X Lens puts the country from X’s **About this account** page beside the author
 | **Hide distractions** | Separate switches for For you, Today’s News, and What’s happening. |
 | **Show post** | Reveal any filtered post. Quotes can be filtered separately. |
 | **Automatic country lookups** | Load details for nearby posts, with shared caching and paced requests. |
-| **Local cache** | Reuse saved details for 24 hours without repeated lookups. |
+| **Local cache** | Reuse saved details for one year (365 days) without repeated lookups. |
 
 ## Install from GitHub
 
@@ -73,7 +73,7 @@ The country is X’s reported account base. It is not citizenship, the profile�
 
 X Lens reads account metadata from X’s own responses and looks up missing About details automatically for posts on screen and up to two screens ahead. This includes reply and quote authors. It does not request every account in a fetched timeline.
 
-All X tabs share one lookup at a time, with a one-second delay between requests. Repeated authors use the same cached result. The cache holds up to 1,000 accounts for 24 hours and survives refreshes. A worker restart retains the request spacing and active-request lease. X rate limits pause requests for at least 15 minutes, or longer if X reports a later reset. There is no hourly account cap imposed by the extension.
+All X tabs share one lookup at a time, with a one-second delay between requests. Repeated authors use the same cached result. The cache holds up to 1,000 accounts for one year (365 days) and survives refreshes. A worker restart retains the request spacing and active-request lease. X rate limits pause requests for at least 15 minutes, or longer if X reports a later reset. There is no hourly account cap imposed by the extension.
 
 Page changes coalesce into one scan per frame. Settings and cached details begin loading at document start. Cached labels can appear as rows render. First-time labels depend on X’s response time, the queue, and request limits.
 

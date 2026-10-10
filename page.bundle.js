@@ -139,7 +139,7 @@
   };
   function enqueue(handle, priority = false) {
     const record = observed.get(handle);
-    if (record?.aboutChecked && Number.isFinite(record.observedAt) && Date.now() - record.observedAt < 86400000) { emit('account', { account: record }); return; }
+    if (record?.aboutChecked && Number.isFinite(record.observedAt) && Date.now() - record.observedAt < 31536000000) { emit('account', { account: record }); return; }
     if (queued.has(handle)) {
       if (priority) {
         const index = queue.indexOf(handle);
@@ -264,7 +264,7 @@
         status('Country display and Android filtering are off.');
       }
       for (const record of (Array.isArray(event.data.cache) ? event.data.cache.slice(-1000) : [])) {
-        if (model.validHandle(record.handle) && record.aboutChecked && Number.isFinite(record.observedAt) && Date.now() - record.observedAt < 86400000) {
+        if (model.validHandle(record.handle) && record.aboutChecked && Number.isFinite(record.observedAt) && Date.now() - record.observedAt < 31536000000) {
           const handle = record.handle.toLowerCase();
           observed.set(handle, { ...record, handle });
           emit('account', { account: observed.get(handle) });

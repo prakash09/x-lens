@@ -44,7 +44,9 @@ test('shared cache deduplicates the same account across tabs and worker restarts
   assert.equal(cached.allowed, false);
   assert.equal(cached.account.country, 'India');
   assert.equal((await setup(budget.stored).reserve()).account.country, 'India');
-  budget.advance(86400001);
+  budget.advance(31536000000 - 1);
+  assert.equal((await budget.reserve()).account.country, 'India');
+  budget.advance(1);
   assert.equal((await budget.reserve()).allowed, true);
 });
 test('persisted X cooldown prevents all new reservations', async () => {
