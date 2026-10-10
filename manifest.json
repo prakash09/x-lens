@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "minimum_chrome_version": "111",
   "name": "X Lens",
-  "version": "1.2.0",
+  "version": "1.4.4",
   "description": "Show X account countries beside names. Optionally hide new accounts and accounts connected via Android.",
   "permissions": [
     "storage"
@@ -29,8 +29,7 @@
         "https://twitter.com/*"
       ],
       "js": [
-        "model.js",
-        "content.js"
+        "content.bundle.js"
       ],
       "css": [
         "content.css"

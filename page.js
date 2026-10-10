@@ -7,12 +7,9 @@
   let cooldown = 0;
   let pauseMessage = 'X lookups paused. Cached countries still appear.';
   let lastLookup = 0;
-  let lookupCount = 0;
   let active = false;
-  let configured = false;
   let settings = model.defaults;
   let pumpTimer;
-  const ahead = new Set();
   const queue = [];
   const queued = new Set();
   const observed = new Map();
@@ -37,9 +34,10 @@
     function visit(value, depth) {
       if (!value || typeof value !== 'object' || depth > 35 || ++visited > 25000) return;
       const handle = value.core?.screen_name || value.legacy?.screen_name;
-      if (model.validHandle(handle) && (value.core?.created_at || value.legacy?.created_at || value.about_profile)) {
+      if (model.validHandle(handle) && (value.core?.created_at || value.legacy?.created_at || value.about_profile || value.profile_bio || typeof value.legacy?.description === 'string')) {
         const record = model.parseAccount(value, handle);
         const old = observed.get(record.handle);
+        if (record.bio === null && typeof old?.bio === 'string') record.bio = old.bio;
         if (old?.aboutChecked && !record.aboutChecked) {
           record.country = old.country;
           record.source = old.source;
@@ -48,12 +46,10 @@
         observed.set(record.handle, record);
         if (observed.size > 1000) observed.delete(observed.keys().next().value);
         emit('account', { account: record });
-        if (!record.aboutChecked && ahead.size < 20) ahead.add(record.handle);
       }
       for (const child of Object.values(value)) visit(child, depth + 1);
     }
     visit(payload, 0);
-    prefetch();
   }
   window.fetch = function(input, init) {
     const url = input instanceof Request ? input.url : String(input);
@@ -83,7 +79,7 @@
   };
   function enqueue(handle, priority = false) {
     const record = observed.get(handle);
-    if (record?.aboutChecked) { emit('account', { account: record }); return; }
+    if (record?.aboutChecked && Number.isFinite(record.observedAt) && Date.now() - record.observedAt < 31536000000) { emit('account', { account: record }); return; }
     if (queued.has(handle)) {
       if (priority) {
         const index = queue.indexOf(handle);
@@ -95,57 +91,57 @@
     queued.add(handle);
     if (priority) queue.unshift(handle);
     else queue.push(handle);
-    pump();
-  }
-  function prefetch() {
-    if (!configured) return;
-    if (settings.autoLookup && (settings.showCountry || settings.hideAndroid)) for (const handle of ahead) enqueue(handle);
-    ahead.clear();
+    if (!active && !pumpTimer) schedulePump(1000);
   }
   function schedulePump(delay) {
     clearTimeout(pumpTimer);
-    pumpTimer = setTimeout(pump, delay);
+    pumpTimer = setTimeout(() => { pumpTimer = null; pump(); }, delay);
   }
-  function requestPermit() {
+  function requestPermit(handle) {
     return new Promise(resolve => {
       const id = `lookup-${++permitSequence}`;
       const timer = setTimeout(() => { permits.delete(id); resolve({ allowed: false }); }, 5000);
       permits.set(id, result => { clearTimeout(timer); resolve(result); });
-      emit('requestPermit', { id });
+      emit('requestPermit', { id, handle });
     });
   }
   async function pump() {
-    if (active || !queue.length || !settings.autoLookup) return;
+    if (active || !queue.length || (!settings.showCountry && !settings.hideAndroid && !settings.hideIOS && !settings.hideWeb)) return;
     if (Date.now() < cooldown) {
       status(pauseMessage);
       schedulePump(Math.min(cooldown - Date.now(), 2147483647));
       return;
     }
-    if (lookupCount >= 10) {
-      queue.length = 0;
-      queued.clear();
-      status('Page lookup budget reached. Cached details still work; refreshing does not reset the hourly budget.');
+    const csrf = document.cookie.match(/(?:^|;\s*)ct0=([^;]+)/)?.[1];
+    if (!csrf || !authorization) {
+      status('Waiting for X session headers.');
+      schedulePump(1000);
       return;
     }
     active = true;
-    const permit = await requestPermit();
-    if (!permit.allowed || !settings.autoLookup) {
+    const nextHandle = queue[0];
+    const permit = await requestPermit(nextHandle);
+    if (permit.account) {
+      const account = { ...permit.account, bio: observed.get(nextHandle)?.bio ?? null };
+      observed.set(nextHandle, account);
+      emit('account', { account });
+      queue.shift();
+      queued.delete(nextHandle);
       active = false;
-      if (Number.isFinite(permit.until) && settings.autoLookup) {
-        status(`Lookup budget paused until ${new Date(permit.until).toLocaleTimeString()}. Cached details still work.`);
-        schedulePump(Math.max(1000, permit.until - Date.now()));
-      }
+      if (queue.length) schedulePump(0);
+      return;
+    }
+    if (!permit.allowed) {
+      active = false;
+      schedulePump(Math.max(1000, Number.isFinite(permit.until) ? permit.until - Date.now() : 5000));
       return;
     }
     const handle = queue.shift();
     let lookupTimeout;
     if (!handle) { active = false; return; }
     try {
-      const csrf = document.cookie.match(/(?:^|;\s*)ct0=([^;]+)/)?.[1];
-      if (!csrf || !authorization) { status('Waiting for X session headers. Open an account’s About page if needed.'); return; }
       lastLookup = Date.now();
       attempted.set(handle, lastLookup);
-      lookupCount++;
       const params = new URLSearchParams({ variables: JSON.stringify({ screenName: handle }) });
       lookupController = new AbortController();
       const controller = lookupController;
@@ -178,6 +174,7 @@
       const json = await response.json();
       const record = model.parseAccount(json?.data?.user_result_by_screen_name?.result, handle);
       if (!record) { emit('lookupFailed', { handle }); return; }
+      if (record.bio === null && typeof observed.get(handle)?.bio === 'string') record.bio = observed.get(handle).bio;
       observed.set(handle, record);
       emit('account', { account: record });
       status('Ready · account details stay in this browser');
@@ -187,9 +184,10 @@
     } finally {
       clearTimeout(lookupTimeout);
       lookupController = null;
+      emit('lookupFinished', { handle });
       queued.delete(handle);
       active = false;
-      if (queue.length) schedulePump(15000);
+      if (queue.length) schedulePump(1000);
     }
   }
   window.addEventListener('message', event => {
@@ -199,27 +197,26 @@
     }
     if (event.data.type === 'configure') {
       settings = model.normalizeSettings(event.data.settings);
-      if (!settings.autoLookup) {
+      if (!settings.showCountry && !settings.hideAndroid && !settings.hideIOS && !settings.hideWeb) {
         clearTimeout(pumpTimer);
+        pumpTimer = null;
         queue.length = 0;
         queued.clear();
         lookupController?.abort();
-        status('Background lookups off. Cached countries and X’s own account responses still work.');
+        status('Country display and connection filters are off.');
       }
       for (const record of (Array.isArray(event.data.cache) ? event.data.cache.slice(-1000) : [])) {
-        if (model.validHandle(record.handle) && record.aboutChecked && Number.isFinite(record.observedAt) && Date.now() - record.observedAt < 86400000) {
+        if (model.validHandle(record.handle) && record.aboutChecked && Number.isFinite(record.observedAt) && Date.now() - record.observedAt < 31536000000) {
           const handle = record.handle.toLowerCase();
-          observed.set(handle, { ...record, handle });
+          observed.set(handle, { ...record, handle, bio: observed.get(handle)?.bio ?? null });
           emit('account', { account: observed.get(handle) });
         }
       }
-      configured = true;
-      prefetch();
     }
     if (event.data.type === 'permit' && typeof event.data.id === 'string') {
       const resolve = permits.get(event.data.id);
-      if (resolve) { permits.delete(event.data.id); resolve({ allowed: event.data.allowed === true, until: event.data.until }); }
+      if (resolve) { permits.delete(event.data.id); resolve({ allowed: event.data.allowed === true, until: event.data.until, account: event.data.account }); }
     }
-    if (settings.autoLookup && event.data.type === 'lookup' && model.validHandle(event.data.handle)) enqueue(event.data.handle.toLowerCase(), true);
+    if ((settings.showCountry || settings.hideAndroid || settings.hideIOS || settings.hideWeb) && event.data.type === 'lookup' && model.validHandle(event.data.handle)) enqueue(event.data.handle.toLowerCase());
   });
 })();
