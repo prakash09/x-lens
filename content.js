@@ -196,6 +196,22 @@
       label.append(input, document.createTextNode(text));
       panel.append(label);
     }
+    const bioLabel = document.createElement('label');
+    bioLabel.className = 'xac-bio-label';
+    bioLabel.textContent = 'Hide accounts with bio keywords';
+    const bioInput = document.createElement('input');
+    bioInput.type = 'text';
+    bioInput.dataset.setting = 'bioKeywords';
+    bioInput.maxLength = 1000;
+    bioInput.placeholder = 'venture, co-founder, investor';
+    bioInput.value = settings.bioKeywords;
+    bioInput.addEventListener('input', () => {
+      settings = { ...settings, bioKeywords: model.normalizeKeywords(bioInput.value) };
+      store({ settings });
+      scheduleScan();
+    });
+    bioLabel.append(bioInput);
+    panel.insertBefore(bioLabel, panel.querySelector('input[data-setting="hideForYou"]').closest('label'));
     const ageLabel = document.createElement('label');
     ageLabel.textContent = 'Hide accounts younger than';
     const ageSelect = document.createElement('select');
@@ -247,11 +263,13 @@
         handle: account.handle.toLowerCase(),
         country: typeof account.country === 'string' ? account.country.slice(0, 120) : null,
         source: typeof account.source === 'string' ? account.source.slice(0, 120) : null,
+        bio: typeof account.bio === 'string' ? account.bio.slice(0, 2000) : null,
         createdAt: typeof account.createdAt === 'string' && Number.isFinite(Date.parse(account.createdAt)) ? account.createdAt : null,
         observedAt: Math.min(account.observedAt, Date.now()),
         aboutChecked: account.aboutChecked === true,
       };
       const old = accounts.get(clean.handle);
+      if (clean.bio === null && fresh(old) && typeof old.bio === 'string') clean.bio = old.bio;
       if (fresh(old) && old.aboutChecked && !clean.aboutChecked) {
         clean.country = old.country;
         clean.source = old.source;
@@ -275,7 +293,9 @@
       settings = model.normalizeSettings(changes.settings.newValue);
       applyLayoutSettings();
       send('configure', { settings });
-      document.querySelectorAll('#xac-controls input[data-setting]').forEach(input => { input.checked = settings[input.dataset.setting]; });
+      document.querySelectorAll('#xac-controls input[data-setting]').forEach(input => { if (input.type === 'text') {
+        if (document.activeElement !== input) input.value = settings[input.dataset.setting];
+      } else input.checked = settings[input.dataset.setting]; });
       const select = document.querySelector('#xac-controls select');
       if (select) select.value = String(settings.minimumAgeMonths);
       scheduleScan();

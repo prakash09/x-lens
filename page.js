@@ -34,9 +34,10 @@
     function visit(value, depth) {
       if (!value || typeof value !== 'object' || depth > 35 || ++visited > 25000) return;
       const handle = value.core?.screen_name || value.legacy?.screen_name;
-      if (model.validHandle(handle) && (value.core?.created_at || value.legacy?.created_at || value.about_profile)) {
+      if (model.validHandle(handle) && (value.core?.created_at || value.legacy?.created_at || value.about_profile || value.profile_bio || typeof value.legacy?.description === 'string')) {
         const record = model.parseAccount(value, handle);
         const old = observed.get(record.handle);
+        if (record.bio === null && typeof old?.bio === 'string') record.bio = old.bio;
         if (old?.aboutChecked && !record.aboutChecked) {
           record.country = old.country;
           record.source = old.source;
@@ -172,6 +173,7 @@
       const json = await response.json();
       const record = model.parseAccount(json?.data?.user_result_by_screen_name?.result, handle);
       if (!record) { emit('lookupFailed', { handle }); return; }
+      if (record.bio === null && typeof observed.get(handle)?.bio === 'string') record.bio = observed.get(handle).bio;
       observed.set(handle, record);
       emit('account', { account: record });
       status('Ready · account details stay in this browser');

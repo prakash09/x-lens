@@ -8,6 +8,7 @@
       handle: record.handle.toLowerCase(), observedAt: record.observedAt,
       country: typeof record.country === 'string' ? record.country.slice(0, 120) : null,
       source: typeof record.source === 'string' ? record.source.slice(0, 120) : null,
+      bio: typeof record.bio === 'string' ? record.bio.slice(0, 2000) : null,
       createdAt: typeof record.createdAt === 'string' && Number.isFinite(Date.parse(record.createdAt)) ? record.createdAt : null,
       aboutChecked: record.aboutChecked === true,
     };
@@ -19,6 +20,7 @@
       const record = clean(value);
       if (!record) continue;
       const previous = cache.get(record.handle);
+      if (record.bio === null && typeof previous?.bio === 'string') record.bio = previous.bio;
       if (previous?.aboutChecked && !record.aboutChecked) {
         record.country = previous.country;
         record.source = previous.source;

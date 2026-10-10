@@ -17,7 +17,7 @@ async function setup(saved = {}) {
   window.chrome = { runtime: { sendMessage: async () => ({ allowed: false }) }, storage: { local: { get: async () => saved, set: async values => { Object.assign(saved, JSON.parse(JSON.stringify(values))); } }, onChanged: { addListener: fn => { listener = fn; } } } };
   for (const file of ['content.bundle.js']) window.eval(fs.readFileSync(path.join(root, file), 'utf8'));
   await pause(180);
-  const record = (handle, source, createdAt, country = 'India') => window.dispatchEvent(new window.MessageEvent('message', { origin: window.location.origin, source: window, data: { channel: 'x-account-context-v1', type: 'account', account: { handle, source, createdAt, country, observedAt: Date.now(), aboutChecked: true } } }));
+  const record = (handle, source, createdAt, country = 'India', bio = null) => window.dispatchEvent(new window.MessageEvent('message', { origin: window.location.origin, source: window, data: { channel: 'x-account-context-v1', type: 'account', account: { handle, source, createdAt, country, bio, observedAt: Date.now(), aboutChecked: true } } }));
   const settings = async next => { listener({ settings: { newValue: next } }, 'local'); await pause(180); };
   return { dom, window, record, settings };
 }
@@ -194,4 +194,26 @@ test('saved connection filters restore in a new page and work without country di
     await second.settings({ showCountry: false });
     assert.equal(second.window.document.querySelectorAll('[data-xac-hidden]').length, 0);
   } finally { second.dom.window.close(); }
+});
+
+test('bio filter hides a matching quote, updates live and preserves a bio omitted by About', async () => {
+  const saved = { settings: { showCountry: false, bioKeywords: 'venture, co-founder' } };
+  const { dom, window, record, settings } = await setup(saved);
+  try {
+    record('oldauthor', 'Web', '2009-06-01', 'India', 'Software engineer');
+    record('newauthor', 'Web', '2009-06-01', 'India', 'Venture guy (co-founder at standard)');
+    await pause(180);
+    assert.equal(window.document.getElementById('post').hasAttribute('data-xac-hidden'), false);
+    assert.equal(window.document.getElementById('quote').hasAttribute('data-xac-hidden'), true);
+    record('newauthor', 'Web', '2009-06-01');
+    await pause(180);
+    assert.equal(window.document.getElementById('quote').hasAttribute('data-xac-hidden'), true);
+    record('newauthor', 'Web', '2009-06-01', 'India', '');
+    await pause(180);
+    assert.equal(window.document.getElementById('quote').hasAttribute('data-xac-hidden'), false);
+    await settings({ bioKeywords: 'engineer', showCountry: false });
+    assert.equal(window.document.getElementById('post').hasAttribute('data-xac-hidden'), true);
+    await settings({ bioKeywords: '' });
+    assert.equal(window.document.querySelectorAll('[data-xac-hidden]').length, 0);
+  } finally { dom.window.close(); }
 });

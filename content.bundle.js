@@ -1,5 +1,5 @@
 (() => {
-  const defaults = Object.freeze({ showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideIOS: false, hideWeb: false, hideForYou: false, hideNews: false, hideTrending: false });
+  const defaults = Object.freeze({ showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideIOS: false, hideWeb: false, hideForYou: false, hideNews: false, hideTrending: false, bioKeywords: '' });
   const validHandle = value => typeof value === 'string' && /^[a-zA-Z0-9_]{1,15}$/.test(value);
   const shortText = value => typeof value === 'string' && value.length <= 120 ? value.trim() : null;
   function parseAccount(user, requested) {
@@ -11,6 +11,7 @@
     return {
       handle: handle.toLowerCase(),
       country: shortText(user.about_profile?.account_based_in),
+      bio: typeof (user.profile_bio?.description ?? user.legacy?.description) === 'string' ? (user.profile_bio?.description ?? user.legacy?.description).slice(0, 2000) : null,
       source: shortText(user.about_profile?.source),
       createdAt: Number.isFinite(date) ? new Date(date).toISOString() : null,
       observedAt: Date.now(),
@@ -18,9 +19,12 @@
     };
   }
   const ageOptions = Object.freeze({ 0: 'Off', 6: '6 months', 12: '1 year', 24: '2 years', 60: '5 years' });
+  function normalizeKeywords(value) {
+    return typeof value === 'string' ? [...new Set(value.slice(0, 1000).split(',').map(word => word.trim()).filter(Boolean))].join(', ') : '';
+  }
   function normalizeSettings(value = {}) {
     const months = value.minimumAgeMonths ?? (value.hideRecent ? 6 : 0);
-    return { showCountry: value.showCountry !== false, minimumAgeMonths: Object.hasOwn(ageOptions, months) ? Number(months) : 0, hideAndroid: value.hideAndroid === true, hideIOS: value.hideIOS === true, hideWeb: value.hideWeb === true, hideForYou: value.hideForYou === true, hideNews: value.hideNews === true, hideTrending: value.hideTrending === true };
+    return { showCountry: value.showCountry !== false, minimumAgeMonths: Object.hasOwn(ageOptions, months) ? Number(months) : 0, hideAndroid: value.hideAndroid === true, hideIOS: value.hideIOS === true, hideWeb: value.hideWeb === true, hideForYou: value.hideForYou === true, hideNews: value.hideNews === true, hideTrending: value.hideTrending === true, bioKeywords: normalizeKeywords(value.bioKeywords) };
   }
   function monthsAgo(now, months) {
     const date = new Date(now);
@@ -42,6 +46,9 @@
     if (settings.hideAndroid && /\bandroid\b/i.test(account.source || '')) matches.push('Connected via Android');
     if (settings.hideIOS && /\b(?:ios|iphone|ipad|app store)\b/i.test(account.source || '')) matches.push('Connected via iOS / App Store');
     if (settings.hideWeb && /\bweb\b/i.test(account.source || '')) matches.push('Connected via Web');
+    const bio = typeof account.bio === 'string' ? account.bio.toLowerCase() : '';
+    const words = normalizeKeywords(settings.bioKeywords).split(', ').filter(Boolean);
+    if (words.some(word => bio.includes(word.toLowerCase()))) matches.push('Profile bio matches your keywords');
     return matches;
   }
   const countries = new Map();
@@ -58,7 +65,7 @@
     const code = countries.get((country || '').toLowerCase());
     return code ? [...code].map(letter => String.fromCodePoint(letter.charCodeAt(0) + 127397)).join('') : '🌐';
   }
-  globalThis.XAccountModel = Object.freeze({ defaults, validHandle, parseAccount, reasons, monthsAgo, sixMonthsAgo: now => monthsAgo(now, 6), ageOptions, normalizeSettings, countryFlag });
+  globalThis.XAccountModel = Object.freeze({ defaults, validHandle, parseAccount, reasons, monthsAgo, sixMonthsAgo: now => monthsAgo(now, 6), ageOptions, normalizeSettings, normalizeKeywords, countryFlag });
 })();
 
 (() => {
@@ -259,6 +266,22 @@
       label.append(input, document.createTextNode(text));
       panel.append(label);
     }
+    const bioLabel = document.createElement('label');
+    bioLabel.className = 'xac-bio-label';
+    bioLabel.textContent = 'Hide accounts with bio keywords';
+    const bioInput = document.createElement('input');
+    bioInput.type = 'text';
+    bioInput.dataset.setting = 'bioKeywords';
+    bioInput.maxLength = 1000;
+    bioInput.placeholder = 'venture, co-founder, investor';
+    bioInput.value = settings.bioKeywords;
+    bioInput.addEventListener('input', () => {
+      settings = { ...settings, bioKeywords: model.normalizeKeywords(bioInput.value) };
+      store({ settings });
+      scheduleScan();
+    });
+    bioLabel.append(bioInput);
+    panel.insertBefore(bioLabel, panel.querySelector('input[data-setting="hideForYou"]').closest('label'));
     const ageLabel = document.createElement('label');
     ageLabel.textContent = 'Hide accounts younger than';
     const ageSelect = document.createElement('select');
@@ -310,11 +333,13 @@
         handle: account.handle.toLowerCase(),
         country: typeof account.country === 'string' ? account.country.slice(0, 120) : null,
         source: typeof account.source === 'string' ? account.source.slice(0, 120) : null,
+        bio: typeof account.bio === 'string' ? account.bio.slice(0, 2000) : null,
         createdAt: typeof account.createdAt === 'string' && Number.isFinite(Date.parse(account.createdAt)) ? account.createdAt : null,
         observedAt: Math.min(account.observedAt, Date.now()),
         aboutChecked: account.aboutChecked === true,
       };
       const old = accounts.get(clean.handle);
+      if (clean.bio === null && fresh(old) && typeof old.bio === 'string') clean.bio = old.bio;
       if (fresh(old) && old.aboutChecked && !clean.aboutChecked) {
         clean.country = old.country;
         clean.source = old.source;
@@ -338,7 +363,9 @@
       settings = model.normalizeSettings(changes.settings.newValue);
       applyLayoutSettings();
       send('configure', { settings });
-      document.querySelectorAll('#xac-controls input[data-setting]').forEach(input => { input.checked = settings[input.dataset.setting]; });
+      document.querySelectorAll('#xac-controls input[data-setting]').forEach(input => { if (input.type === 'text') {
+        if (document.activeElement !== input) input.value = settings[input.dataset.setting];
+      } else input.checked = settings[input.dataset.setting]; });
       const select = document.querySelector('#xac-controls select');
       if (select) select.value = String(settings.minimumAgeMonths);
       scheduleScan();

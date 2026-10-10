@@ -19,13 +19,14 @@ async function openPopup(saved) {
 test('all popup settings survive closing and recreating the popup', async () => {
   const saved = {};
   const first = await openPopup(saved);
-  const expected = { showCountry: false, minimumAgeMonths: 24, hideAndroid: true, hideIOS: true, hideWeb: true, hideForYou: true, hideNews: true, hideTrending: true };
+  const expected = { showCountry: false, minimumAgeMonths: 24, hideAndroid: true, hideIOS: true, hideWeb: true, hideForYou: true, hideNews: true, hideTrending: true, bioKeywords: 'venture, co-founder' };
   try {
     for (const [key, value] of Object.entries(expected)) {
       const input = first.window.document.getElementById(key);
       if (input.tagName === 'SELECT') input.value = String(value);
+      else if (input.type === 'text') input.value = value;
       else input.checked = value;
-      input.dispatchEvent(new first.window.Event('change'));
+      input.dispatchEvent(new first.window.Event(input.type === 'text' ? 'input' : 'change'));
       await pause();
     }
   } finally { first.window.close(); }
@@ -34,7 +35,7 @@ test('all popup settings survive closing and recreating the popup', async () => 
   try {
     for (const [key, value] of Object.entries(expected)) {
       const input = second.window.document.getElementById(key);
-      assert.equal(input.tagName === 'SELECT' ? Number(input.value) : input.checked, value, key);
+      assert.equal(input.tagName === 'SELECT' ? Number(input.value) : input.type === 'text' ? input.value : input.checked, value, key);
     }
     second.window.document.getElementById('clearCache').click();
     await pause();

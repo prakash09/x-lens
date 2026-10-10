@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 require('../model.js');
 const model = globalThis.XAccountModel;
 const now = Date.parse('2026-10-10T12:00:00Z');
-test('defaults leave optional filters off', () => assert.deepEqual(model.defaults, { showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideIOS: false, hideWeb: false, hideForYou: false, hideNews: false, hideTrending: false }));
+test('defaults leave optional filters off', () => assert.deepEqual(model.defaults, { showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideIOS: false, hideWeb: false, hideForYou: false, hideNews: false, hideTrending: false, bioKeywords: '' }));
 test('country flag uses reported country, regions stay neutral', () => {
   assert.equal(model.countryFlag('India'), '🇮🇳');
   assert.equal(model.countryFlag('United States'), '🇺🇸');
@@ -63,4 +63,14 @@ test('iOS and Web match only the reported connection source', () => {
   for (const source of [null, 'Android', 'Website', 'NotiOS', 'NotWeb']) {
     assert.deepEqual(model.reasons({ source, country: 'iOS', name: 'Web' }, { hideIOS: true, hideWeb: true }), []);
   }
+});
+
+test('bio keywords match any literal phrase ignoring case, only in the bio', () => {
+  const settings = { bioKeywords: ' , venture, co-founder , ' };
+  assert.deepEqual(model.reasons({ bio: 'Venture guy (co-founder at standard)' }, settings), ['Profile bio matches your keywords']);
+  for (const bio of [null, '', 'Software engineer']) assert.deepEqual(model.reasons({ bio, name: 'venture', source: 'venture' }, settings), []);
+  assert.deepEqual(model.reasons({ bio: 'a.b [founder]' }, { bioKeywords: 'a.b, [founder]' }), ['Profile bio matches your keywords']);
+  assert.deepEqual(model.reasons({ bio: 'axb' }, { bioKeywords: 'a.b' }), []);
+  assert.equal(model.parseAccount({ core: { screen_name: 'example' }, legacy: { description: 'venture guy' } }, 'example').bio, 'venture guy');
+  assert.equal(model.parseAccount({ core: { screen_name: 'example' }, profile_bio: { description: '' }, legacy: { description: 'old bio' } }, 'example').bio, '');
 });
