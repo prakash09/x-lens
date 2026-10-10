@@ -5,11 +5,14 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 test('each execution world gets a distinct model script, all declared assets exist', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(root, 'manifest.json')));
+  assert.deepEqual(manifest.content_scripts[1].js, ['content.bundle.js']);
   const files = manifest.content_scripts.flatMap(script => [...script.js, ...(script.css || [])]);
   assert.equal(new Set(files).size, files.length);
   for (const file of files) assert.ok(fs.existsSync(path.join(root, file)), file);
-  const bundle = ['model.js', 'page.js'].map(file => fs.readFileSync(path.join(root, file), 'utf8')).join('\n');
-  assert.equal(fs.readFileSync(path.join(root, 'page.bundle.js'), 'utf8'), bundle);
+  for (const entry of ['page', 'content']) {
+    const bundle = ['model.js', `${entry}.js`].map(file => fs.readFileSync(path.join(root, file), 'utf8')).join('\n');
+    assert.equal(fs.readFileSync(path.join(root, `${entry}.bundle.js`), 'utf8'), bundle);
+  }
   assert.deepEqual(manifest.permissions, ['storage']);
   assert.ok(fs.existsSync(path.join(root, manifest.background.service_worker)));
   assert.ok(fs.existsSync(path.join(root, manifest.action.default_popup)));

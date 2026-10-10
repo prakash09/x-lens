@@ -7,14 +7,31 @@
   let settings = { ...model.defaults };
   let saveTimer;
   let scanPending = false;
+  let switchingToFollowing = false;
   let statusText = 'Loading account details…';
   const send = (type, value) => window.postMessage({ channel, type, ...value }, location.origin);
   const fresh = record => record && Number.isFinite(record.observedAt) && Date.now() - record.observedAt < 86400000;
+  function storageFailed(error) {
+    statusText = error?.message?.includes('Extension context invalidated')
+      ? 'X Lens updated. Refresh X to reconnect.'
+      : 'Could not save settings. Refresh X and try again.';
+    const status = document.getElementById('xac-status');
+    if (status) status.textContent = statusText;
+  }
+  async function store(values) {
+    try { await chrome.storage.local.set(values); }
+    catch (error) { storageFailed(error); }
+  }
+  async function requestPermit() {
+    if (!settings.autoLookup) return { allowed: false };
+    try { return await chrome.runtime.sendMessage({ type: 'permitLookup' }); }
+    catch (error) { storageFailed(error); return { allowed: false }; }
+  }
   function saveCache() {
     clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
       const cache = [...accounts.values()].filter(fresh).slice(-1000);
-      chrome.storage.local.set({ cache }).catch(() => {});
+      store({ cache });
     }, 1000);
   }
   function handleFor(header) {
@@ -94,7 +111,43 @@
     const quote = header.closest('[data-testid="quoteTweet"], div[role="link"]');
     return quote && article.contains(quote) ? quote : article;
   }
+  function applyLayoutSettings() {
+    for (const key of ['hideForYou', 'hideNews', 'hideTrending']) {
+      document.documentElement?.toggleAttribute(`data-xac-${key}`, settings[key]);
+    }
+  }
+  function hideDistractions() {
+    const primary = document.querySelector('[data-testid="primaryColumn"]');
+    const tabs = [...(primary?.querySelectorAll('[role="tab"]') || [])];
+    const forYou = tabs.find(tab => tab.textContent.trim().toLowerCase() === 'for you');
+    const following = tabs.find(tab => tab.textContent.trim().toLowerCase() === 'following');
+    if (forYou) forYou.setAttribute('data-xac-for-you', '');
+    if (!settings.hideForYou || !forYou || following?.getAttribute('aria-selected') === 'true') switchingToFollowing = false;
+    if (settings.hideForYou && location.pathname === '/home' && forYou?.getAttribute('aria-selected') === 'true' && following && !switchingToFollowing) {
+      switchingToFollowing = true;
+      following.click();
+    }
+    for (const sidebar of document.querySelectorAll('[data-testid="sidebarColumn"]')) {
+      for (const card of sidebar.querySelectorAll('[data-xac-section]')) card.removeAttribute('data-xac-section');
+      for (const heading of sidebar.querySelectorAll('h1, h2, h3, [role="heading"]')) {
+        const label = heading.cloneNode(true);
+        for (const control of label.querySelectorAll('button, [role="button"], [aria-label="Close"], svg')) control.remove();
+        const title = label.textContent.trim().replace(/[’‘]/g, "'").toLowerCase();
+        const section = /^today's news(?:\s*close)?$/.test(title) ? 'news' : title === "what's happening" ? 'trending' : null;
+        if (!section) continue;
+        // Hide the card with its links, not the heading or the whole sidebar.
+        for (let card = heading.parentElement; card && card !== sidebar; card = card.parentElement) {
+          const links = [...card.querySelectorAll('a[href]')].filter(link => !heading.contains(link));
+          if (!links.length) continue;
+          if (card.querySelectorAll('h1, h2, [role="heading"][aria-level="1"], [role="heading"][aria-level="2"]').length > 1) break;
+          card.setAttribute('data-xac-section', section);
+          break;
+        }
+      }
+    }
+  }
   function scan() {
+    hideDistractions();
     document.querySelectorAll('[data-testid="User-Name"], [data-testid="UserName"]').forEach(header => {
       const handle = handleFor(header);
       if (!handle) return;
@@ -127,7 +180,7 @@
     const title = document.createElement('strong');
     title.textContent = 'X Lens';
     panel.append(title);
-    for (const [key, text] of Object.entries({ showCountry: 'Show country beside names', autoLookup: 'Load new countries (10 lookups/hour)', hideAndroid: 'Hide accounts connected via Android' })) {
+    for (const [key, text] of Object.entries({ showCountry: 'Show country beside names', autoLookup: 'Load new countries (10 lookups/hour)', hideAndroid: 'Hide accounts connected via Android', hideForYou: 'Hide For you tab', hideNews: 'Hide Today’s News', hideTrending: 'Hide What’s happening' })) {
       const label = document.createElement('label');
       const input = document.createElement('input');
       input.type = 'checkbox';
@@ -135,7 +188,8 @@
       input.checked = settings[key];
       input.addEventListener('change', () => {
         settings = { ...settings, [key]: input.checked };
-        chrome.storage.local.set({ settings }).catch(() => {});
+        applyLayoutSettings();
+        store({ settings });
         scheduleScan();
       });
       label.append(input, document.createTextNode(text));
@@ -154,11 +208,16 @@
     ageSelect.value = String(settings.minimumAgeMonths);
     ageSelect.addEventListener('change', () => {
       settings = { ...settings, minimumAgeMonths: Number(ageSelect.value) };
-      chrome.storage.local.set({ settings }).catch(() => {});
+      store({ settings });
       scheduleScan();
     });
     ageLabel.append(ageSelect);
-    panel.append(ageLabel);
+    const firstLayoutLabel = panel.querySelector('input[data-setting="hideForYou"]').closest('label');
+    panel.insertBefore(ageLabel, firstLayoutLabel);
+    const layoutTitle = document.createElement('strong');
+    layoutTitle.className = 'xac-section-title';
+    layoutTitle.textContent = 'Hide distractions';
+    panel.insertBefore(layoutTitle, firstLayoutLabel);
     const note = document.createElement('p');
     note.textContent = 'Filters change this page only. Unknown accounts stay visible.';
     const status = document.createElement('p');
@@ -173,9 +232,7 @@
     if (event.source !== window || event.origin !== location.origin || event.data?.channel !== channel) return;
     const message = event.data;
     if (message.type === 'requestPermit' && typeof message.id === 'string' && message.id.length < 80) {
-      const reply = settings.autoLookup
-        ? chrome.runtime.sendMessage({ type: 'permitLookup' }).catch(() => ({ allowed: false }))
-        : Promise.resolve({ allowed: false });
+      const reply = requestPermit();
       reply.then(permit => send('permit', { id: message.id, allowed: permit?.allowed === true, until: permit?.until }));
     }
     if (message.type === 'account') {
@@ -200,7 +257,7 @@
       saveCache();
       scheduleScan();
     }
-    if (message.type === 'cooldown' && Number.isFinite(message.until)) chrome.storage.local.set({ cooldown: message.until }).catch(() => {});
+    if (message.type === 'cooldown' && Number.isFinite(message.until)) store({ cooldown: message.until });
     if (message.type === 'status' && typeof message.message === 'string') {
       statusText = message.message.slice(0, 200);
       const status = document.getElementById('xac-status');
@@ -211,6 +268,7 @@
     if (area !== 'local') return;
     if (changes.settings) {
       settings = model.normalizeSettings(changes.settings.newValue);
+      applyLayoutSettings();
       send('configure', { settings });
       document.querySelectorAll('#xac-controls input[data-setting]').forEach(input => { input.checked = settings[input.dataset.setting]; });
       const select = document.querySelector('#xac-controls select');
@@ -227,6 +285,7 @@
     try {
       const stored = await chrome.storage.local.get(['settings', 'cache', 'cooldown']);
       settings = model.normalizeSettings(stored.settings);
+      applyLayoutSettings();
       for (const record of stored.cache || []) if (fresh(record) && model.validHandle(record.handle)) accounts.set(record.handle, record);
       send('restoreCooldown', { until: stored.cooldown });
     } catch { statusText = 'Storage unavailable. Using default settings.'; }
@@ -237,7 +296,7 @@
     mountControls();
     new MutationObserver(mutations => {
       if (mutations.some(mutation => !mutation.target.closest?.('#xac-controls, .xac-badge, .xac-placeholder'))) scheduleScan();
-    }).observe(document.body, { childList: true, subtree: true });
+    }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['aria-selected'] });
     window.addEventListener('scroll', scheduleScan, { passive: true });
     scan();
   }

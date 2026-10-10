@@ -1,5 +1,5 @@
 (() => {
-  const defaults = Object.freeze({ showCountry: true, autoLookup: false, minimumAgeMonths: 0, hideAndroid: false });
+  const defaults = Object.freeze({ showCountry: true, autoLookup: false, minimumAgeMonths: 0, hideAndroid: false, hideForYou: false, hideNews: false, hideTrending: false });
   const validHandle = value => typeof value === 'string' && /^[a-zA-Z0-9_]{1,15}$/.test(value);
   const shortText = value => typeof value === 'string' && value.length <= 120 ? value.trim() : null;
   function parseAccount(user, requested) {
@@ -20,7 +20,7 @@
   const ageOptions = Object.freeze({ 0: 'Off', 6: '6 months', 12: '1 year', 24: '2 years', 60: '5 years' });
   function normalizeSettings(value = {}) {
     const months = value.minimumAgeMonths ?? (value.hideRecent ? 6 : 0);
-    return { showCountry: value.showCountry !== false, autoLookup: value.autoLookup === true, minimumAgeMonths: Object.hasOwn(ageOptions, months) ? Number(months) : 0, hideAndroid: value.hideAndroid === true };
+    return { showCountry: value.showCountry !== false, autoLookup: value.autoLookup === true, minimumAgeMonths: Object.hasOwn(ageOptions, months) ? Number(months) : 0, hideAndroid: value.hideAndroid === true, hideForYou: value.hideForYou === true, hideNews: value.hideNews === true, hideTrending: value.hideTrending === true };
   }
   function monthsAgo(now, months) {
     const date = new Date(now);

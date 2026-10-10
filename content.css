@@ -17,3 +17,10 @@
 
 #xac-controls select { color: #e7e9ea; background: #15212c; border: 1px solid #536471; border-radius: 6px; padding: 6px; font: inherit; min-width: 88px; }
 #xac-controls select:focus-visible { outline: 2px solid #80cfff; outline-offset: 2px; }
+
+html[data-xac-hideForYou] [data-xac-for-you],
+html[data-xac-hideNews] [data-testid="sidebarColumn"] [data-xac-section="news"],
+html[data-xac-hideTrending] [data-testid="sidebarColumn"] [data-xac-section="trending"] { display: none !important; }
+.xac-panel { max-height: calc(100vh - 140px); overflow-y: auto; box-sizing: border-box; }
+
+.xac-panel .xac-section-title { display: block; margin-top: 22px; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: #8b98a5; }

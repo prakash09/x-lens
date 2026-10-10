@@ -16,13 +16,14 @@ Country names and flags beside X accounts. A quieter feed, on your terms.
 
 ## A little more context
 
-X Lens puts the country from X’s **About this account** page beside the author’s name. It also adds two optional filters. Country labels are on by default. Both filters are off.
+X Lens puts the country from X’s **About this account** page beside the author’s name. It also adds two optional filters. Country labels are on by default. Both account filters and all distraction switches are off.
 
 | Feature | What you get |
 | --- | --- |
 | **Country + flag** | X’s “Account based in” field beside names in posts, replies, and quotes. |
 | **Account age** | Hide posts from accounts younger than **6 months, 1 year, 2 years, or 5 years**. |
 | **Android filter** | Hide posts from accounts whose “Connected via” field includes Android. |
+| **Hide distractions** | Separate switches for For you, Today’s News, and What’s happening. |
 | **Show post** | Reveal any filtered post. Quotes can be filtered separately. |
 | **Optional early lookups** | Prefetch before posts render when enabled. Background requests are off by default. |
 | **Local cache** | Reuse saved details for 24 hours without repeated lookups. |
@@ -47,7 +48,7 @@ GitHub distributes the files. Chrome loads them as an unpacked extension. This p
 git clone https://github.com/prakash09/x-lens.git
 ```
 
-Load the `x-lens` folder in Chrome with the same steps above. The generated page bundle is committed, so a build is not needed to install.
+Load the `x-lens` folder in Chrome with the same steps above. The generated bundles are committed, so a build is not needed to install.
 
 </details>
 
@@ -63,6 +64,7 @@ Load the `x-lens` folder in Chrome with the same steps above. The generated page
 - **Leave Load new countries off** for zero background About requests. Turn it on only when needed; all tabs share a small hourly budget.
 - **Choose an account age** to hide younger accounts. Choose **Off** to restore them. An account exactly at the cutoff stays visible. Unknown, invalid, or future join dates stay visible.
 - **Enable Connected via Android** to match that specific field from X. This does not prove the account was created on Android or that the current post came from Android.
+- **Hide distractions** with three separate switches. Hiding a selected **For you** tab switches Home to **Following**. The sidebar switches hide the **Today’s News** and **What’s happening** cards and preserve other sections. Turn each switch off to restore it. These labels currently match X’s English interface.
 - **Click Show post** to reveal a filtered post. Changes apply to open X tabs. These filters do not block or mute accounts.
 
 The country is X’s reported account base. It is not citizenship, the profile’s written location, or a flag in the display name. Broad regions use a neutral globe. A globe alone means a country is not available yet.
@@ -117,18 +119,18 @@ npm test
 | --- | --- |
 | `model.js` | Account parsing, country flags, calendar cutoffs, and settings migration. |
 | `page.js` | Read X responses, capture request headers, and pace optional lookups. |
-| `page.bundle.js` | Generated main-world bundle. Keep it committed. |
+| `page.bundle.js`, `content.bundle.js` | Generated bundles for both execution worlds. Keep them committed. |
 | `background.js` | Serialize lookup reservations and persist a shared request budget. |
 | `content.js`, `content.css` | Country badges, local filters, and page controls. |
 | `popup.html`, `popup.css`, `popup.js` | Toolbar popup and settings. |
 | `manifest.json` | Scope, execution worlds, permissions, and runtime files. |
 | `tests/` | Model, DOM, request, and manifest checks. |
 
-The main and isolated execution worlds use distinct script paths. Run `npm run build` after changing `model.js` or `page.js`.
+The main and isolated execution worlds use distinct script paths. Run `npm run build` after changing `model.js`, `page.js`, or `content.js`.
 
 ### Validation
 
-23 automated checks cover calendar boundaries, leap days, missing data, Android matching, account identity, safe text rendering, independent quote filtering, restoring posts, request deduplication, rate-limit pauses, prefetch before DOM requests, cache reuse, and manifest/bundle consistency.
+27 automated checks cover calendar boundaries, leap days, missing data, Android matching, account identity, safe text rendering, independent quote filtering, restoring posts, request deduplication, rate-limit pauses, prefetch before DOM requests, cache reuse, manifest/bundle consistency, extension reload errors, independent layout switches, sidebar scope, navigation, and switching to Following.
 
 Live Chrome checks confirmed country badges, both filter types, restoring posts, and the age selector. Mobile widths and X’s light theme have not been visually verified. There is no claim that X’s internal endpoint will remain stable. Background lookups are now off by default after a live rate-limit report.
 
@@ -138,7 +140,8 @@ Manual checks:
 2. Choose **1 year** for a recent account. Confirm its post collapses. Choose **Off** and confirm it returns.
 3. Enable Android filtering for a matching account. Click **Show post**, then disable the filter.
 4. Check a post with a quote from another author. Each author must have its own label and filter result.
-5. Open two X tabs and change settings in the popup. Both tabs must update. An account exactly at the age cutoff must remain visible.
+5. Toggle **Today’s News** and **What’s happening** separately. **Who to follow** must remain. Hide **For you** while it is selected; Home must switch to **Following**. Turn the switches off and check restoration.
+6. Open two X tabs and change settings in the popup. Both tabs must update. An account exactly at the age cutoff must remain visible.
 
 ## Licence and credits
 

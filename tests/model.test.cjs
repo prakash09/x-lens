@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 require('../model.js');
 const model = globalThis.XAccountModel;
 const now = Date.parse('2026-10-10T12:00:00Z');
-test('defaults leave both filters off', () => assert.deepEqual(model.defaults, { showCountry: true, autoLookup: false, minimumAgeMonths: 0, hideAndroid: false }));
+test('defaults leave both filters off', () => assert.deepEqual(model.defaults, { showCountry: true, autoLookup: false, minimumAgeMonths: 0, hideAndroid: false, hideForYou: false, hideNews: false, hideTrending: false }));
 test('country flag uses reported country, regions stay neutral', () => {
   assert.equal(model.countryFlag('India'), '🇮🇳');
   assert.equal(model.countryFlag('United States'), '🇺🇸');
