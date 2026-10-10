@@ -96,10 +96,15 @@
     try { return await chrome.runtime.sendMessage({ type: 'permitLookup', handle }); }
     catch (error) { storageFailed(error); return { allowed: false }; }
   }
+  function restoreCachedAccount(record) {
+    if (!fresh(record) || !model.validHandle(record.handle)) return;
+    const { bio, ...saved } = record;
+    accounts.set(saved.handle, { ...saved, bio: accounts.get(saved.handle)?.bio ?? null });
+  }
   function saveCache() {
     clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
-      const cache = [...accounts.values()].filter(fresh).slice(-1000);
+      const cache = [...accounts.values()].filter(fresh).slice(-1000).map(({ bio, ...record }) => record);
       try { chrome.runtime.sendMessage({ type: 'cacheAccounts', accounts: cache }).catch(storageFailed); }
       catch (error) { storageFailed(error); }
     }, 1000);
@@ -372,7 +377,7 @@
     }
     if (changes.cooldown) send('restoreCooldown', { until: changes.cooldown.newValue });
     if (changes.cache?.newValue) {
-      for (const record of changes.cache.newValue) if (fresh(record) && model.validHandle(record.handle)) accounts.set(record.handle, record);
+      for (const record of changes.cache.newValue) restoreCachedAccount(record);
       scheduleScan();
     }
   });
@@ -381,7 +386,7 @@
       const stored = await chrome.storage.local.get(['settings', 'cache', 'cooldown']);
       settings = model.normalizeSettings(stored.settings);
       applyLayoutSettings();
-      for (const record of stored.cache || []) if (fresh(record) && model.validHandle(record.handle)) accounts.set(record.handle, record);
+      for (const record of stored.cache || []) restoreCachedAccount(record);
       send('restoreCooldown', { until: stored.cooldown });
     } catch { statusText = 'Storage unavailable. Using default settings.'; }
     send('configure', { settings, cache: [...accounts.values()] });

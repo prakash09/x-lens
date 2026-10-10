@@ -1,5 +1,9 @@
 (() => {
-  let pending = Promise.resolve();
+  let pending = chrome.storage.local.get('cache').then(async stored => {
+    if (Array.isArray(stored.cache) && stored.cache.some(record => Object.hasOwn(record, 'bio'))) {
+      await chrome.storage.local.set({ cache: stored.cache.map(clean).filter(Boolean) });
+    }
+  });
   const validHandle = handle => typeof handle === 'string' && /^[a-zA-Z0-9_]{1,15}$/.test(handle);
   const fresh = record => record && validHandle(record.handle) && Number.isFinite(record.observedAt) && record.observedAt <= Date.now() && Date.now() - record.observedAt < 31536000000;
   function clean(record) {
@@ -8,19 +12,17 @@
       handle: record.handle.toLowerCase(), observedAt: record.observedAt,
       country: typeof record.country === 'string' ? record.country.slice(0, 120) : null,
       source: typeof record.source === 'string' ? record.source.slice(0, 120) : null,
-      bio: typeof record.bio === 'string' ? record.bio.slice(0, 2000) : null,
       createdAt: typeof record.createdAt === 'string' && Number.isFinite(Date.parse(record.createdAt)) ? record.createdAt : null,
       aboutChecked: record.aboutChecked === true,
     };
   }
   async function mergeCache(records) {
     const stored = await chrome.storage.local.get('cache');
-    const cache = new Map((Array.isArray(stored.cache) ? stored.cache : []).filter(fresh).map(record => [record.handle.toLowerCase(), record]));
+    const cache = new Map((Array.isArray(stored.cache) ? stored.cache : []).map(clean).filter(Boolean).map(record => [record.handle, record]));
     for (const value of records.slice(-1000)) {
       const record = clean(value);
       if (!record) continue;
       const previous = cache.get(record.handle);
-      if (record.bio === null && typeof previous?.bio === 'string') record.bio = previous.bio;
       if (previous?.aboutChecked && !record.aboutChecked) {
         record.country = previous.country;
         record.source = previous.source;

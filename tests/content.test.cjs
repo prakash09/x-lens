@@ -217,3 +217,20 @@ test('bio filter hides a matching quote, updates live and preserves a bio omitte
     assert.equal(window.document.querySelectorAll('[data-xac-hidden]').length, 0);
   } finally { dom.window.close(); }
 });
+
+test('stored bios do not filter a fresh page; live responses update matching', async () => {
+  const saved = { settings: { showCountry: false, bioKeywords: 'venture' }, cache: [{ handle: 'oldauthor', bio: 'venture guy', country: 'India', aboutChecked: true, observedAt: Date.now() }] };
+  const { dom, window, record } = await setup(saved);
+  try {
+    assert.equal(window.document.getElementById('post').hasAttribute('data-xac-hidden'), false);
+    record('oldauthor', 'Web', '2009-06-01', 'India', 'venture guy');
+    await pause(180);
+    assert.equal(window.document.getElementById('post').hasAttribute('data-xac-hidden'), true);
+    record('oldauthor', 'Web', '2009-06-01', 'India', 'Software engineer');
+    await pause(180);
+    assert.equal(window.document.getElementById('post').hasAttribute('data-xac-hidden'), false);
+    const page = await setup(saved);
+    try { assert.equal(page.window.document.getElementById('post').hasAttribute('data-xac-hidden'), false); }
+    finally { page.dom.window.close(); }
+  } finally { dom.window.close(); }
+});

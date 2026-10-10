@@ -122,8 +122,9 @@
     const nextHandle = queue[0];
     const permit = await requestPermit(nextHandle);
     if (permit.account) {
-      observed.set(nextHandle, permit.account);
-      emit('account', { account: permit.account });
+      const account = { ...permit.account, bio: observed.get(nextHandle)?.bio ?? null };
+      observed.set(nextHandle, account);
+      emit('account', { account });
       queue.shift();
       queued.delete(nextHandle);
       active = false;
@@ -207,7 +208,7 @@
       for (const record of (Array.isArray(event.data.cache) ? event.data.cache.slice(-1000) : [])) {
         if (model.validHandle(record.handle) && record.aboutChecked && Number.isFinite(record.observedAt) && Date.now() - record.observedAt < 31536000000) {
           const handle = record.handle.toLowerCase();
-          observed.set(handle, { ...record, handle });
+          observed.set(handle, { ...record, handle, bio: observed.get(handle)?.bio ?? null });
           emit('account', { account: observed.get(handle) });
         }
       }

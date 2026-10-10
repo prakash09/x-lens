@@ -57,11 +57,13 @@ test('persisted X cooldown prevents all new reservations', async () => {
   assert.equal(budget.stored.lookupBudget, undefined);
 });
 
-test('shared cache retains a bio across About updates and persists an explicitly empty bio', async () => {
-  const budget = setup();
-  await budget.message({ type: 'cacheAccounts', accounts: [{ handle: 'example', bio: 'venture guy', observedAt: 1800000000000 }] });
-  await budget.message({ type: 'cacheAccounts', accounts: [{ handle: 'example', country: 'India', aboutChecked: true, observedAt: 1800000000000 }] });
-  assert.equal((await setup(budget.stored).reserve()).account.bio, 'venture guy');
-  await budget.message({ type: 'cacheAccounts', accounts: [{ handle: 'example', bio: '', observedAt: 1800000000000 }] });
-  assert.equal((await budget.reserve()).account.bio, '');
+
+test('shared cache excludes bios and removes bios stored by older versions', async () => {
+  const budget = setup({ cache: [{ handle: 'example', bio: 'old venture guy', country: 'India', aboutChecked: true, observedAt: 1800000000000 }] });
+  assert.equal((await budget.reserve()).account.bio, undefined);
+  assert.equal(Object.hasOwn(budget.stored.cache[0], 'bio'), false);
+  await budget.message({ type: 'cacheAccounts', accounts: [{ handle: 'example', bio: 'new venture guy', observedAt: 1800000000000 }] });
+  assert.equal((await setup(budget.stored).reserve()).account.bio, undefined);
+  assert.equal(budget.stored.cache[0].country, 'India');
+  assert.equal(Object.hasOwn(budget.stored.cache[0], 'bio'), false);
 });
