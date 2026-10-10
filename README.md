@@ -22,7 +22,7 @@ X Lens puts the country from X’s **About this account** page beside the author
 | --- | --- |
 | **Country + flag** | X’s “Account based in” field beside names in posts, replies, and quotes. |
 | **Account age** | Hide posts from accounts younger than **6 months, 1 year, 2 years, or 5 years**. |
-| **Android filter** | Hide posts from accounts whose “Connected via” field includes Android. |
+| **Connection filters** | Separately hide Android, iOS / App Store, or Web accounts using X’s “Connected via” field. |
 | **Hide distractions** | Separate switches for For you, Today’s News, and What’s happening. |
 | **Show post** | Reveal any filtered post. Quotes can be filtered separately. |
 | **Automatic country lookups** | Load details for nearby posts, with shared caching and paced requests. |
@@ -63,7 +63,7 @@ Load the `x-lens` folder in Chrome with the same steps above. The generated bund
 - **Hover a country badge** to see the reported country, connection source, and join date. Click the badge to open that account’s About page.
 - **Countries load automatically** for accounts near the screen. There is no separate lookup switch. Fresh cached results skip the request.
 - **Choose an account age** to hide younger accounts. Choose **Off** to restore them. An account exactly at the cutoff stays visible. Unknown, invalid, or future join dates stay visible.
-- **Enable Connected via Android** to match that specific field from X. This does not prove the account was created on Android or that the current post came from Android.
+- **Enable a connection filter** to match that specific field from X. iOS matches iOS, iPhone, iPad and App Store labels. Each filter is independent. The field does not prove the signup device or the device used for the current post.
 - **Hide distractions** with three separate switches. Hiding a selected **For you** tab switches Home to **Following**. The sidebar switches hide the **Today’s News** and **What’s happening** cards and preserve other sections. Turn each switch off to restore it. These labels currently match X’s English interface.
 - **Click Show post** to reveal a filtered post. Changes apply to open X tabs. These filters do not block or mute accounts.
 
@@ -97,7 +97,7 @@ A failed lookup never makes an account match a filter.
 - Runs only on `x.com` and `twitter.com`.
 - Requests only the `storage` extension permission. Its content scripts read and change X pages.
 - Sends account lookups only to X through your existing session.
-- Keeps settings and projected account details in this browser’s local storage.
+- Keeps settings and projected account details in this browser’s local storage. Settings load again after tabs or Chrome close.
 - Keeps session headers in X’s page context, in memory. They are not stored in the account cache or sent to another service.
 - Does not follow, block, mute, like, repost, or publish anything.
 
@@ -129,7 +129,7 @@ The main and isolated execution worlds use distinct script paths. Run `npm run b
 
 ### Validation
 
-30 automated checks cover calendar boundaries, leap days, missing data, Android matching, account identity, safe text rendering, independent quote filtering, restoring posts, request deduplication, rate-limit pauses, near-screen lookups, automatic defaults, cross-tab cache reuse, manifest/bundle consistency, extension reload errors, independent layout switches, sidebar scope, navigation, and switching to Following.
+33 automated checks cover calendar boundaries, leap days, missing data, Android, iOS and Web matching, settings restoration after page and popup recreation, account identity, safe text rendering, independent quote filtering, restoring posts, request deduplication, rate-limit pauses, near-screen lookups, automatic defaults, cross-tab cache reuse, manifest/bundle consistency, extension reload errors, independent layout switches, sidebar scope, navigation, and switching to Following.
 
 Live Chrome checks confirmed country badges, both filter types, restoring posts, and the age selector. Mobile widths and X’s light theme have not been visually verified. There is no claim that X’s internal endpoint will remain stable. Automatic lookups pause on X rate-limit responses.
 

@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 require('../model.js');
 const model = globalThis.XAccountModel;
 const now = Date.parse('2026-10-10T12:00:00Z');
-test('defaults leave both filters off', () => assert.deepEqual(model.defaults, { showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideForYou: false, hideNews: false, hideTrending: false }));
+test('defaults leave optional filters off', () => assert.deepEqual(model.defaults, { showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideIOS: false, hideWeb: false, hideForYou: false, hideNews: false, hideTrending: false }));
 test('country flag uses reported country, regions stay neutral', () => {
   assert.equal(model.countryFlag('India'), '🇮🇳');
   assert.equal(model.countryFlag('United States'), '🇺🇸');
@@ -52,4 +52,15 @@ test('settings migrate the old six-month toggle and reject unsupported ages', ()
   assert.equal(model.normalizeSettings({ hideRecent: true }).minimumAgeMonths, 6);
   assert.equal(model.normalizeSettings({ hideRecent: true, minimumAgeMonths: 24 }).minimumAgeMonths, 24);
   assert.equal(model.normalizeSettings({ minimumAgeMonths: 17 }).minimumAgeMonths, 0);
+});
+
+test('iOS and Web match only the reported connection source', () => {
+  for (const source of ['iOS', 'Twitter for iPhone', 'iPad', 'United States App Store']) {
+    assert.deepEqual(model.reasons({ source }, { hideIOS: true }), ['Connected via iOS / App Store']);
+    assert.deepEqual(model.reasons({ source }, { hideWeb: true }), []);
+  }
+  assert.deepEqual(model.reasons({ source: 'Web' }, { hideWeb: true }), ['Connected via Web']);
+  for (const source of [null, 'Android', 'Website', 'NotiOS', 'NotWeb']) {
+    assert.deepEqual(model.reasons({ source, country: 'iOS', name: 'Web' }, { hideIOS: true, hideWeb: true }), []);
+  }
 });

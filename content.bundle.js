@@ -1,5 +1,5 @@
 (() => {
-  const defaults = Object.freeze({ showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideForYou: false, hideNews: false, hideTrending: false });
+  const defaults = Object.freeze({ showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideIOS: false, hideWeb: false, hideForYou: false, hideNews: false, hideTrending: false });
   const validHandle = value => typeof value === 'string' && /^[a-zA-Z0-9_]{1,15}$/.test(value);
   const shortText = value => typeof value === 'string' && value.length <= 120 ? value.trim() : null;
   function parseAccount(user, requested) {
@@ -20,7 +20,7 @@
   const ageOptions = Object.freeze({ 0: 'Off', 6: '6 months', 12: '1 year', 24: '2 years', 60: '5 years' });
   function normalizeSettings(value = {}) {
     const months = value.minimumAgeMonths ?? (value.hideRecent ? 6 : 0);
-    return { showCountry: value.showCountry !== false, minimumAgeMonths: Object.hasOwn(ageOptions, months) ? Number(months) : 0, hideAndroid: value.hideAndroid === true, hideForYou: value.hideForYou === true, hideNews: value.hideNews === true, hideTrending: value.hideTrending === true };
+    return { showCountry: value.showCountry !== false, minimumAgeMonths: Object.hasOwn(ageOptions, months) ? Number(months) : 0, hideAndroid: value.hideAndroid === true, hideIOS: value.hideIOS === true, hideWeb: value.hideWeb === true, hideForYou: value.hideForYou === true, hideNews: value.hideNews === true, hideTrending: value.hideTrending === true };
   }
   function monthsAgo(now, months) {
     const date = new Date(now);
@@ -40,6 +40,8 @@
       matches.push(`Joined within the last ${ageOptions[months]}`);
     }
     if (settings.hideAndroid && /\bandroid\b/i.test(account.source || '')) matches.push('Connected via Android');
+    if (settings.hideIOS && /\b(?:ios|iphone|ipad|app store)\b/i.test(account.source || '')) matches.push('Connected via iOS / App Store');
+    if (settings.hideWeb && /\bweb\b/i.test(account.source || '')) matches.push('Connected via Web');
     return matches;
   }
   const countries = new Map();
@@ -105,7 +107,7 @@
     return match?.[1]?.toLowerCase() || null;
   }
   function lookup(handle) {
-    if (!settings.showCountry && !settings.hideAndroid) return;
+    if (!settings.showCountry && !settings.hideAndroid && !settings.hideIOS && !settings.hideWeb) return;
     const account = accounts.get(handle);
     if (fresh(account) && account.aboutChecked) return;
     const last = requested.get(handle);
@@ -242,7 +244,7 @@
     const title = document.createElement('strong');
     title.textContent = 'X Lens';
     panel.append(title);
-    for (const [key, text] of Object.entries({ showCountry: 'Show country beside names', hideAndroid: 'Hide accounts connected via Android', hideForYou: 'Hide For you tab', hideNews: 'Hide Today’s News', hideTrending: 'Hide What’s happening' })) {
+    for (const [key, text] of Object.entries({ showCountry: 'Show country beside names', hideAndroid: 'Hide accounts connected via Android', hideIOS: 'Hide accounts connected via iOS / App Store', hideWeb: 'Hide accounts connected via Web', hideForYou: 'Hide For you tab', hideNews: 'Hide Today’s News', hideTrending: 'Hide What’s happening' })) {
       const label = document.createElement('label');
       const input = document.createElement('input');
       input.type = 'checkbox';
@@ -281,7 +283,7 @@
     layoutTitle.textContent = 'Hide distractions';
     panel.insertBefore(layoutTitle, firstLayoutLabel);
     const note = document.createElement('p');
-    note.textContent = 'Filters change this page only. Unknown accounts stay visible.';
+    note.textContent = 'Settings are saved in this browser. Unknown accounts stay visible.';
     const status = document.createElement('p');
     status.id = 'xac-status';
     status.textContent = statusText;

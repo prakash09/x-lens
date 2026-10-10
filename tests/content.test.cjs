@@ -6,7 +6,7 @@ const { JSDOM } = require('jsdom');
 const root = path.resolve(__dirname, '..');
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
 function header(handle) { return `<div data-testid="User-Name"><div><a href="/${handle}"><span>${handle}</span></a></div><div><a href="/${handle}">@${handle}</a></div></div>`; }
-async function setup() {
+async function setup(saved = {}) {
   const dom = new JSDOM(`<body><article data-testid="tweet" id="post">${header('oldauthor')}<div data-testid="tweetText">Original post</div><div role="link" id="quote">${header('newauthor')}<div>Quoted post</div></div></article></body>`, { url: 'https://x.com/home', runScripts: 'outside-only' });
   const { window } = dom;
   const style = window.document.createElement('style');
@@ -14,7 +14,7 @@ async function setup() {
   window.document.head.append(style);
   let listener;
   window.Intl.DisplayNames = Intl.DisplayNames;
-  window.chrome = { runtime: { sendMessage: async () => ({ allowed: false }) }, storage: { local: { get: async () => ({}), set: async () => {} }, onChanged: { addListener: fn => { listener = fn; } } } };
+  window.chrome = { runtime: { sendMessage: async () => ({ allowed: false }) }, storage: { local: { get: async () => saved, set: async values => { Object.assign(saved, JSON.parse(JSON.stringify(values))); } }, onChanged: { addListener: fn => { listener = fn; } } } };
   for (const file of ['content.bundle.js']) window.eval(fs.readFileSync(path.join(root, file), 'utf8'));
   await pause(180);
   const record = (handle, source, createdAt, country = 'India') => window.dispatchEvent(new window.MessageEvent('message', { origin: window.location.origin, source: window, data: { channel: 'x-account-context-v1', type: 'account', account: { handle, source, createdAt, country, observedAt: Date.now(), aboutChecked: true } } }));
@@ -165,4 +165,33 @@ test('news card stays hidden while stories load and after heading text updates',
     await settings({ hideNews: false });
     assert.notEqual(window.getComputedStyle(window.document.getElementById('loading-news')).display, 'none');
   } finally { dom.window.close(); }
+});
+
+test('saved connection filters restore in a new page and work without country display', async () => {
+  const saved = {};
+  const first = await setup(saved);
+  try {
+    const input = first.window.document.querySelector('[data-setting="hideIOS"]');
+    input.checked = true;
+    input.dispatchEvent(new first.window.Event('change'));
+    const web = first.window.document.querySelector('[data-setting="hideWeb"]');
+    web.checked = true;
+    web.dispatchEvent(new first.window.Event('change'));
+    const country = first.window.document.querySelector('[data-setting="showCountry"]');
+    country.checked = false;
+    country.dispatchEvent(new first.window.Event('change'));
+    await pause(180);
+  } finally { first.dom.window.close(); }
+  const second = await setup(saved);
+  try {
+    assert.equal(second.window.document.querySelector('[data-setting="hideIOS"]').checked, true);
+    assert.equal(second.window.document.querySelector('[data-setting="hideWeb"]').checked, true);
+    assert.equal(second.window.document.querySelector('[data-setting="showCountry"]').checked, false);
+    second.record('oldauthor', 'United States App Store', '2009-06-01');
+    second.record('newauthor', 'Web', '2009-06-01');
+    await pause(180);
+    assert.equal(second.window.document.querySelectorAll('[data-xac-hidden]').length, 2);
+    await second.settings({ showCountry: false });
+    assert.equal(second.window.document.querySelectorAll('[data-xac-hidden]').length, 0);
+  } finally { second.dom.window.close(); }
 });

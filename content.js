@@ -44,7 +44,7 @@
     return match?.[1]?.toLowerCase() || null;
   }
   function lookup(handle) {
-    if (!settings.showCountry && !settings.hideAndroid) return;
+    if (!settings.showCountry && !settings.hideAndroid && !settings.hideIOS && !settings.hideWeb) return;
     const account = accounts.get(handle);
     if (fresh(account) && account.aboutChecked) return;
     const last = requested.get(handle);
@@ -181,7 +181,7 @@
     const title = document.createElement('strong');
     title.textContent = 'X Lens';
     panel.append(title);
-    for (const [key, text] of Object.entries({ showCountry: 'Show country beside names', hideAndroid: 'Hide accounts connected via Android', hideForYou: 'Hide For you tab', hideNews: 'Hide Today’s News', hideTrending: 'Hide What’s happening' })) {
+    for (const [key, text] of Object.entries({ showCountry: 'Show country beside names', hideAndroid: 'Hide accounts connected via Android', hideIOS: 'Hide accounts connected via iOS / App Store', hideWeb: 'Hide accounts connected via Web', hideForYou: 'Hide For you tab', hideNews: 'Hide Today’s News', hideTrending: 'Hide What’s happening' })) {
       const label = document.createElement('label');
       const input = document.createElement('input');
       input.type = 'checkbox';
@@ -220,7 +220,7 @@
     layoutTitle.textContent = 'Hide distractions';
     panel.insertBefore(layoutTitle, firstLayoutLabel);
     const note = document.createElement('p');
-    note.textContent = 'Filters change this page only. Unknown accounts stay visible.';
+    note.textContent = 'Settings are saved in this browser. Unknown accounts stay visible.';
     const status = document.createElement('p');
     status.id = 'xac-status';
     status.textContent = statusText;

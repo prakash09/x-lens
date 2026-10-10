@@ -1,5 +1,5 @@
 (() => {
-  const defaults = Object.freeze({ showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideForYou: false, hideNews: false, hideTrending: false });
+  const defaults = Object.freeze({ showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideIOS: false, hideWeb: false, hideForYou: false, hideNews: false, hideTrending: false });
   const validHandle = value => typeof value === 'string' && /^[a-zA-Z0-9_]{1,15}$/.test(value);
   const shortText = value => typeof value === 'string' && value.length <= 120 ? value.trim() : null;
   function parseAccount(user, requested) {
@@ -20,7 +20,7 @@
   const ageOptions = Object.freeze({ 0: 'Off', 6: '6 months', 12: '1 year', 24: '2 years', 60: '5 years' });
   function normalizeSettings(value = {}) {
     const months = value.minimumAgeMonths ?? (value.hideRecent ? 6 : 0);
-    return { showCountry: value.showCountry !== false, minimumAgeMonths: Object.hasOwn(ageOptions, months) ? Number(months) : 0, hideAndroid: value.hideAndroid === true, hideForYou: value.hideForYou === true, hideNews: value.hideNews === true, hideTrending: value.hideTrending === true };
+    return { showCountry: value.showCountry !== false, minimumAgeMonths: Object.hasOwn(ageOptions, months) ? Number(months) : 0, hideAndroid: value.hideAndroid === true, hideIOS: value.hideIOS === true, hideWeb: value.hideWeb === true, hideForYou: value.hideForYou === true, hideNews: value.hideNews === true, hideTrending: value.hideTrending === true };
   }
   function monthsAgo(now, months) {
     const date = new Date(now);
@@ -40,6 +40,8 @@
       matches.push(`Joined within the last ${ageOptions[months]}`);
     }
     if (settings.hideAndroid && /\bandroid\b/i.test(account.source || '')) matches.push('Connected via Android');
+    if (settings.hideIOS && /\b(?:ios|iphone|ipad|app store)\b/i.test(account.source || '')) matches.push('Connected via iOS / App Store');
+    if (settings.hideWeb && /\bweb\b/i.test(account.source || '')) matches.push('Connected via Web');
     return matches;
   }
   const countries = new Map();
