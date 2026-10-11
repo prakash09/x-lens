@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 require('../model.js');
 const model = globalThis.XAccountModel;
 const now = Date.parse('2026-10-10T12:00:00Z');
-test('defaults leave optional filters off', () => assert.deepEqual(model.defaults, { showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideIOS: false, hideWeb: false, hideForYou: false, hideNews: false, hideTrending: false, bioKeywords: '' }));
+test('defaults leave optional filters off', () => assert.deepEqual(model.defaults, { showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideIOS: false, hideWeb: false, hideForYou: false, hideNews: false, hideTrending: false, bioKeywords: '', hiddenCountries: '', shownCountries: '' }));
 test('country flag uses reported country, regions stay neutral', () => {
   assert.equal(model.countryFlag('India'), '🇮🇳');
   assert.equal(model.countryFlag('United States'), '🇺🇸');
@@ -73,4 +73,29 @@ test('bio keywords match any literal phrase ignoring case, only in the bio', () 
   assert.deepEqual(model.reasons({ bio: 'axb' }, { bioKeywords: 'a.b' }), []);
   assert.equal(model.parseAccount({ core: { screen_name: 'example' }, legacy: { description: 'venture guy' } }, 'example').bio, 'venture guy');
   assert.equal(model.parseAccount({ core: { screen_name: 'example' }, profile_bio: { description: '' }, legacy: { description: 'old bio' } }, 'example').bio, '');
+});
+
+test('hidden countries match the whole name, ignoring case, spaces and hyphens', () => {
+  const settings = { hiddenCountries: ' , South-asia, united  STATES , ' };
+  for (const country of ['South Asia', 'south asia', 'SOUTHASIA', 'United States']) assert.deepEqual(model.reasons({ country }, settings), [`Based in ${country}`]);
+  for (const country of [null, '', 'Asia', 'South Asia Pacific', 'India']) assert.deepEqual(model.reasons({ country, bio: 'South Asia', source: 'South Asia' }, settings), []);
+  assert.deepEqual(model.reasons({ country: 'Nigeria' }, { hiddenCountries: 'Niger' }), []);
+  assert.deepEqual(model.reasons({ country: 'Côte d’Ivoire' }, { hiddenCountries: 'cote divoire' }), ['Based in Côte d’Ivoire']);
+  assert.deepEqual(model.reasons({ country: 'India' }, model.defaults), []);
+});
+test('lookups stay on for a country filter alone', () => {
+  const quiet = { ...model.defaults, showCountry: false };
+  assert.equal(model.needsAbout(quiet), false);
+  assert.equal(model.needsAbout({ ...quiet, hiddenCountries: 'India' }), true);
+  assert.equal(model.needsAbout({ ...quiet, shownCountries: 'India' }), true);
+  assert.equal(model.needsAbout({ ...quiet, bioKeywords: 'venture', minimumAgeMonths: 6 }), false);
+});
+test('shown countries hide every other known country; unknown countries stay visible', () => {
+  const settings = { shownCountries: 'south-asia, United States' };
+  for (const country of ['South Asia', 'united states', null, '']) assert.deepEqual(model.reasons({ country }, settings), []);
+  for (const country of ['India', 'Asia', 'Canada']) assert.deepEqual(model.reasons({ country }, settings), [`Based in ${country}`]);
+  for (const shownCountries of ['', ' , ', '--, &']) assert.deepEqual(model.reasons({ country: 'Canada' }, { shownCountries }), []);
+  const both = { shownCountries: 'Canada, India', hiddenCountries: 'India, Brazil' };
+  assert.deepEqual(model.reasons({ country: 'Canada' }, both), []);
+  for (const country of ['India', 'Brazil']) assert.deepEqual(model.reasons({ country }, both), [`Based in ${country}`]);
 });

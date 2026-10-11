@@ -1,5 +1,5 @@
 (() => {
-  const defaults = Object.freeze({ showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideIOS: false, hideWeb: false, hideForYou: false, hideNews: false, hideTrending: false, bioKeywords: '' });
+  const defaults = Object.freeze({ showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideIOS: false, hideWeb: false, hideForYou: false, hideNews: false, hideTrending: false, bioKeywords: '', hiddenCountries: '', shownCountries: '' });
   const validHandle = value => typeof value === 'string' && /^[a-zA-Z0-9_]{1,15}$/.test(value);
   const shortText = value => typeof value === 'string' && value.length <= 120 ? value.trim() : null;
   function parseAccount(user, requested) {
@@ -24,8 +24,12 @@
   }
   function normalizeSettings(value = {}) {
     const months = value.minimumAgeMonths ?? (value.hideRecent ? 6 : 0);
-    return { showCountry: value.showCountry !== false, minimumAgeMonths: Object.hasOwn(ageOptions, months) ? Number(months) : 0, hideAndroid: value.hideAndroid === true, hideIOS: value.hideIOS === true, hideWeb: value.hideWeb === true, hideForYou: value.hideForYou === true, hideNews: value.hideNews === true, hideTrending: value.hideTrending === true, bioKeywords: normalizeKeywords(value.bioKeywords) };
+    return { showCountry: value.showCountry !== false, minimumAgeMonths: Object.hasOwn(ageOptions, months) ? Number(months) : 0, hideAndroid: value.hideAndroid === true, hideIOS: value.hideIOS === true, hideWeb: value.hideWeb === true, hideForYou: value.hideForYou === true, hideNews: value.hideNews === true, hideTrending: value.hideTrending === true, bioKeywords: normalizeKeywords(value.bioKeywords), hiddenCountries: normalizeKeywords(value.hiddenCountries), shownCountries: normalizeKeywords(value.shownCountries) };
   }
+  const needsAbout = settings => !!(settings.showCountry || settings.hideAndroid || settings.hideIOS || settings.hideWeb || settings.hiddenCountries || settings.shownCountries);
+  // South Asia, south-asia and SOUTHASIA are one name.
+  const countryKey = value => typeof value === 'string' ? value.normalize('NFKD').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '') : '';
+  const countryKeys = value => normalizeKeywords(value).split(', ').map(countryKey).filter(Boolean);
   function monthsAgo(now, months) {
     const date = new Date(now);
     const day = date.getUTCDate();
@@ -49,6 +53,10 @@
     const bio = typeof account.bio === 'string' ? account.bio.toLowerCase() : '';
     const words = normalizeKeywords(settings.bioKeywords).split(', ').filter(Boolean);
     if (words.some(word => bio.includes(word.toLowerCase()))) matches.push('Profile bio matches your keywords');
+    const country = countryKey(account.country);
+    const shown = countryKeys(settings.shownCountries);
+    const outsideShown = shown.length > 0 && !shown.includes(country);
+    if (country && (outsideShown || countryKeys(settings.hiddenCountries).includes(country))) matches.push(`Based in ${account.country}`);
     return matches;
   }
   const countries = new Map();
@@ -65,5 +73,5 @@
     const code = countries.get((country || '').toLowerCase());
     return code ? [...code].map(letter => String.fromCodePoint(letter.charCodeAt(0) + 127397)).join('') : '🌐';
   }
-  globalThis.XAccountModel = Object.freeze({ defaults, validHandle, parseAccount, reasons, monthsAgo, sixMonthsAgo: now => monthsAgo(now, 6), ageOptions, normalizeSettings, normalizeKeywords, countryFlag });
+  globalThis.XAccountModel = Object.freeze({ defaults, validHandle, parseAccount, reasons, monthsAgo, sixMonthsAgo: now => monthsAgo(now, 6), ageOptions, normalizeSettings, normalizeKeywords, needsAbout, countryFlag });
 })();

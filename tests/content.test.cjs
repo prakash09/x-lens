@@ -234,3 +234,50 @@ test('stored bios do not filter a fresh page; live responses update matching', a
     finally { page.dom.window.close(); }
   } finally { dom.window.close(); }
 });
+
+test('country filter hides matching authors without country display, then restores them', async () => {
+  const saved = { settings: { showCountry: false } };
+  const { dom, window, record } = await setup(saved);
+  try {
+    record('oldauthor', 'Web', '2009-06-01', 'United States');
+    record('newauthor', 'Web', '2009-06-01', 'South Asia');
+    await pause(180);
+    const input = window.document.querySelector('[data-setting="hiddenCountries"]');
+    input.value = 'south-asia, Canada';
+    input.dispatchEvent(new window.Event('input'));
+    await pause(180);
+    assert.equal(saved.settings.hiddenCountries, 'south-asia, Canada');
+    assert.equal(window.document.getElementById('post').hasAttribute('data-xac-hidden'), false);
+    assert.match(window.document.querySelector('#quote .xac-placeholder').textContent, /^Hidden @newauthor · Based in South Asia/);
+    input.value = '';
+    input.dispatchEvent(new window.Event('input'));
+    await pause(180);
+    assert.equal(window.document.querySelectorAll('[data-xac-hidden]').length, 0);
+  } finally { dom.window.close(); }
+});
+
+test('shown countries hide other known authors; unknown authors stay visible', async () => {
+  const saved = { settings: { showCountry: false } };
+  const { dom, window, record } = await setup(saved);
+  try {
+    record('newauthor', 'Web', '2009-06-01', 'South Asia');
+    const input = window.document.querySelector('[data-setting="shownCountries"]');
+    input.value = 'United-States';
+    input.dispatchEvent(new window.Event('input'));
+    await pause(180);
+    assert.equal(saved.settings.shownCountries, 'United-States');
+    assert.equal(window.document.getElementById('post').hasAttribute('data-xac-hidden'), false);
+    assert.match(window.document.querySelector('#quote .xac-placeholder').textContent, /^Hidden @newauthor · Based in South Asia/);
+    record('oldauthor', 'Web', '2009-06-01', 'United States');
+    record('newauthor', 'Web', '2009-06-01', 'united states');
+    await pause(180);
+    assert.equal(window.document.querySelectorAll('[data-xac-hidden]').length, 0);
+    record('oldauthor', 'Web', '2009-06-01', 'Canada');
+    await pause(180);
+    assert.equal(window.document.getElementById('post').hasAttribute('data-xac-hidden'), true);
+    input.value = '';
+    input.dispatchEvent(new window.Event('input'));
+    await pause(180);
+    assert.equal(window.document.querySelectorAll('[data-xac-hidden]').length, 0);
+  } finally { dom.window.close(); }
+});

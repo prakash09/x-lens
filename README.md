@@ -9,6 +9,8 @@ A Chrome extension that shows the country of each X account beside its name, and
 - **Shows the country.** A flag and country name appear beside names in posts, replies, and quotes. The data comes from X's **About this account** page.
 - **Hides accounts by connection.** Hide accounts that X reports as connected via Android, iOS / App Store, or Web.
 - **Hides accounts by bio keyword.** Enter words or phrases with commas between them, for example `venture, co-founder, investor`.
+- **Hides accounts by country.** Enter countries or regions with commas between them, for example `United States, South Asia`. The match ignores case, spaces, and hyphens.
+- **Shows only the countries you select.** Enter a second list to hide accounts based in all other countries or regions.
 - **Hides new accounts.** Hide accounts younger than 6 months, 1 year, 2 years, or 5 years.
 - **Hides distractions.** Remove the **For you** tab, **Today's News**, and **What's happening**.
 
