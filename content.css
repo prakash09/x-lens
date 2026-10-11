@@ -25,4 +25,4 @@ html[data-xac-hideTrending] [data-testid="sidebarColumn"] [data-xac-section="tre
 
 .xac-panel .xac-section-title { display: block; margin-top: 22px; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: #8b98a5; }
 
-.xac-panel .xac-bio-label { display: block; } .xac-panel input[type="text"] { display: block; width: 100%; height: auto; box-sizing: border-box; margin-top: 8px; padding: 8px; border: 1px solid #536471; border-radius: 6px; color: #e7e9ea; background: #15212c; font: inherit; }
+.xac-panel .xac-text-label { display: block; } .xac-panel input[type="text"] { display: block; width: 100%; height: auto; box-sizing: border-box; margin-top: 8px; padding: 8px; border: 1px solid #536471; border-radius: 6px; color: #e7e9ea; background: #15212c; font: inherit; }

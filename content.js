@@ -49,7 +49,7 @@
     return match?.[1]?.toLowerCase() || null;
   }
   function lookup(handle) {
-    if (!settings.showCountry && !settings.hideAndroid && !settings.hideIOS && !settings.hideWeb) return;
+    if (!model.needsAbout(settings)) return;
     const account = accounts.get(handle);
     if (fresh(account) && account.aboutChecked) return;
     const last = requested.get(handle);
@@ -201,22 +201,24 @@
       label.append(input, document.createTextNode(text));
       panel.append(label);
     }
-    const bioLabel = document.createElement('label');
-    bioLabel.className = 'xac-bio-label';
-    bioLabel.textContent = 'Hide accounts with bio keywords';
-    const bioInput = document.createElement('input');
-    bioInput.type = 'text';
-    bioInput.dataset.setting = 'bioKeywords';
-    bioInput.maxLength = 1000;
-    bioInput.placeholder = 'venture, co-founder, investor';
-    bioInput.value = settings.bioKeywords;
-    bioInput.addEventListener('input', () => {
-      settings = { ...settings, bioKeywords: model.normalizeKeywords(bioInput.value) };
-      store({ settings });
-      scheduleScan();
-    });
-    bioLabel.append(bioInput);
-    panel.insertBefore(bioLabel, panel.querySelector('input[data-setting="hideForYou"]').closest('label'));
+    for (const [key, text, placeholder] of [['bioKeywords', 'Hide accounts with bio keywords', 'venture, co-founder, investor'], ['hiddenCountries', 'Hide accounts based in', 'United States, South Asia']]) {
+      const label = document.createElement('label');
+      label.className = 'xac-text-label';
+      label.textContent = text;
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.dataset.setting = key;
+      input.maxLength = 1000;
+      input.placeholder = placeholder;
+      input.value = settings[key];
+      input.addEventListener('input', () => {
+        settings = { ...settings, [key]: model.normalizeKeywords(input.value) };
+        store({ settings });
+        scheduleScan();
+      });
+      label.append(input);
+      panel.insertBefore(label, panel.querySelector('input[data-setting="hideForYou"]').closest('label'));
+    }
     const ageLabel = document.createElement('label');
     ageLabel.textContent = 'Hide accounts younger than';
     const ageSelect = document.createElement('select');

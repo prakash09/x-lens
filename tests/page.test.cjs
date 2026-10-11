@@ -121,3 +121,19 @@ test('native hover-card response supplies a bio without an extension request', a
     assert.equal(requests.length, 1);
   } finally { dom.window.close(); }
 });
+
+test('a country filter alone keeps lookups on; no display and no filter stops them', async () => {
+  const fixture = { data: { user_result_by_screen_name: { result: { core: { screen_name: 'elonmusk', created_at: '2009-06-01' }, about_profile: { account_based_in: 'United States' } } } } };
+  const { dom, window, requests, lookup } = setup(() => new Response(JSON.stringify(fixture)));
+  const configure = settings => window.dispatchEvent(new window.MessageEvent('message', { origin: window.location.origin, source: window, data: { channel: 'x-account-context-v1', type: 'configure', settings } }));
+  try {
+    configure({ showCountry: false });
+    lookup('elonmusk');
+    await pause(1100);
+    assert.equal(requests.length, 0);
+    configure({ showCountry: false, hiddenCountries: 'India' });
+    lookup('elonmusk');
+    await pause(1100);
+    assert.equal(requests.length, 1);
+  } finally { dom.window.close(); }
+});

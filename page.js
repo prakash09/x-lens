@@ -106,7 +106,7 @@
     });
   }
   async function pump() {
-    if (active || !queue.length || (!settings.showCountry && !settings.hideAndroid && !settings.hideIOS && !settings.hideWeb)) return;
+    if (active || !queue.length || !model.needsAbout(settings)) return;
     if (Date.now() < cooldown) {
       status(pauseMessage);
       schedulePump(Math.min(cooldown - Date.now(), 2147483647));
@@ -197,13 +197,13 @@
     }
     if (event.data.type === 'configure') {
       settings = model.normalizeSettings(event.data.settings);
-      if (!settings.showCountry && !settings.hideAndroid && !settings.hideIOS && !settings.hideWeb) {
+      if (!model.needsAbout(settings)) {
         clearTimeout(pumpTimer);
         pumpTimer = null;
         queue.length = 0;
         queued.clear();
         lookupController?.abort();
-        status('Country display and connection filters are off.');
+        status('Country display, connection filters and country filters are off.');
       }
       for (const record of (Array.isArray(event.data.cache) ? event.data.cache.slice(-1000) : [])) {
         if (model.validHandle(record.handle) && record.aboutChecked && Number.isFinite(record.observedAt) && Date.now() - record.observedAt < 31536000000) {
@@ -217,6 +217,6 @@
       const resolve = permits.get(event.data.id);
       if (resolve) { permits.delete(event.data.id); resolve({ allowed: event.data.allowed === true, until: event.data.until, account: event.data.account }); }
     }
-    if ((settings.showCountry || settings.hideAndroid || settings.hideIOS || settings.hideWeb) && event.data.type === 'lookup' && model.validHandle(event.data.handle)) enqueue(event.data.handle.toLowerCase());
+    if (model.needsAbout(settings) && event.data.type === 'lookup' && model.validHandle(event.data.handle)) enqueue(event.data.handle.toLowerCase());
   });
 })();
