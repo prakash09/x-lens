@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 require('../model.js');
 const model = globalThis.XAccountModel;
 const now = Date.parse('2026-10-10T12:00:00Z');
-test('defaults leave optional filters off', () => assert.deepEqual(model.defaults, { showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideIOS: false, hideWeb: false, hideForYou: false, hideNews: false, hideTrending: false, bioKeywords: '', hiddenCountries: '' }));
+test('defaults leave optional filters off', () => assert.deepEqual(model.defaults, { showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideIOS: false, hideWeb: false, hideForYou: false, hideNews: false, hideTrending: false, bioKeywords: '', hiddenCountries: '', shownCountries: '' }));
 test('country flag uses reported country, regions stay neutral', () => {
   assert.equal(model.countryFlag('India'), '🇮🇳');
   assert.equal(model.countryFlag('United States'), '🇺🇸');
@@ -87,5 +87,15 @@ test('lookups stay on for a country filter alone', () => {
   const quiet = { ...model.defaults, showCountry: false };
   assert.equal(model.needsAbout(quiet), false);
   assert.equal(model.needsAbout({ ...quiet, hiddenCountries: 'India' }), true);
+  assert.equal(model.needsAbout({ ...quiet, shownCountries: 'India' }), true);
   assert.equal(model.needsAbout({ ...quiet, bioKeywords: 'venture', minimumAgeMonths: 6 }), false);
+});
+test('shown countries hide every other known country; unknown countries stay visible', () => {
+  const settings = { shownCountries: 'south-asia, United States' };
+  for (const country of ['South Asia', 'united states', null, '']) assert.deepEqual(model.reasons({ country }, settings), []);
+  for (const country of ['India', 'Asia', 'Canada']) assert.deepEqual(model.reasons({ country }, settings), [`Based in ${country}`]);
+  for (const shownCountries of ['', ' , ', '--, &']) assert.deepEqual(model.reasons({ country: 'Canada' }, { shownCountries }), []);
+  const both = { shownCountries: 'Canada, India', hiddenCountries: 'India, Brazil' };
+  assert.deepEqual(model.reasons({ country: 'Canada' }, both), []);
+  for (const country of ['India', 'Brazil']) assert.deepEqual(model.reasons({ country }, both), [`Based in ${country}`]);
 });

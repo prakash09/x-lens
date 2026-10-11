@@ -201,7 +201,12 @@
       label.append(input, document.createTextNode(text));
       panel.append(label);
     }
-    for (const [key, text, placeholder] of [['bioKeywords', 'Hide accounts with bio keywords', 'venture, co-founder, investor'], ['hiddenCountries', 'Hide accounts based in', 'United States, South Asia']]) {
+    const textFields = [
+      ['bioKeywords', 'Hide accounts with bio keywords', 'venture, co-founder, investor'],
+      ['hiddenCountries', 'Hide accounts based in', 'United States, South Asia'],
+      ['shownCountries', 'Only show accounts based in', 'United States, South Asia'],
+    ];
+    for (const [key, text, placeholder] of textFields) {
       const label = document.createElement('label');
       label.className = 'xac-text-label';
       label.textContent = text;
