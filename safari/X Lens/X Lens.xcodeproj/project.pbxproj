@@ -1,0 +1,967 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 110;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CDC251DA307B82A000F6BA00 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC251D9307B82A000F6BA00 /* AppDelegate.swift */; };
+		CDC251DC307B82A000F6BA00 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC251DB307B82A000F6BA00 /* SceneDelegate.swift */; };
+		CDC251DF307B82A000F6BA00 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDC251DD307B82A000F6BA00 /* LaunchScreen.storyboard */; };
+		CDC251E2307B82A000F6BA00 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDC251E0307B82A000F6BA00 /* Main.storyboard */; };
+		CDC251EB307B82A000F6BA00 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC251EA307B82A000F6BA00 /* AppDelegate.swift */; };
+		CDC251EE307B82A000F6BA00 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDC251EC307B82A000F6BA00 /* Main.storyboard */; };
+		CDC251F5307B82A000F6BA00 /* X Lens Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CDC251F4307B82A000F6BA00 /* X Lens Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CDC251FF307B82A000F6BA00 /* X Lens Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CDC251FE307B82A000F6BA00 /* X Lens Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CDC25204307B82A000F6BA00 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = CDC251C9307B829F00F6BA00 /* Main.html */; };
+		CDC25205307B82A000F6BA00 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = CDC251C9307B829F00F6BA00 /* Main.html */; };
+		CDC25206307B82A000F6BA00 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDC251CB307B829F00F6BA00 /* Icon.png */; };
+		CDC25207307B82A000F6BA00 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDC251CB307B829F00F6BA00 /* Icon.png */; };
+		CDC25208307B82A000F6BA00 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = CDC251CC307B829F00F6BA00 /* Style.css */; };
+		CDC25209307B82A000F6BA00 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = CDC251CC307B829F00F6BA00 /* Style.css */; };
+		CDC2520A307B82A000F6BA00 /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = CDC251CD307B829F00F6BA00 /* Script.js */; };
+		CDC2520B307B82A000F6BA00 /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = CDC251CD307B829F00F6BA00 /* Script.js */; };
+		CDC2520C307B82A000F6BA00 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC251CE307B829F00F6BA00 /* ViewController.swift */; };
+		CDC2520D307B82A000F6BA00 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC251CE307B829F00F6BA00 /* ViewController.swift */; };
+		CDC2520E307B82A000F6BA00 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDC251CF307B82A000F6BA00 /* Assets.xcassets */; };
+		CDC2520F307B82A000F6BA00 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDC251CF307B82A000F6BA00 /* Assets.xcassets */; };
+		CDC25210307B82A000F6BA00 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC251D1307B82A000F6BA00 /* SafariWebExtensionHandler.swift */; };
+		CDC25211307B82A000F6BA00 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC251D1307B82A000F6BA00 /* SafariWebExtensionHandler.swift */; };
+		CDC25236307B82A000F6BA00 /* popup.js in Resources */ = {isa = PBXBuildFile; fileRef = CDC25223307B82A000F6BA00 /* popup.js */; };
+		CDC25237307B82A000F6BA00 /* content.css in Resources */ = {isa = PBXBuildFile; fileRef = CDC25224307B82A000F6BA00 /* content.css */; };
+		CDC2523A307B82A000F6BA00 /* background.js in Resources */ = {isa = PBXBuildFile; fileRef = CDC25227307B82A000F6BA00 /* background.js */; };
+		CDC2523B307B82A000F6BA00 /* popup.html in Resources */ = {isa = PBXBuildFile; fileRef = CDC25228307B82A000F6BA00 /* popup.html */; };
+		CDC25242307B82A000F6BA00 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = CDC2522F307B82A000F6BA00 /* manifest.json */; };
+		CDC25244307B82A000F6BA00 /* popup.css in Resources */ = {isa = PBXBuildFile; fileRef = CDC25231307B82A000F6BA00 /* popup.css */; };
+		CDC25246307B82A000F6BA00 /* page.bundle.js in Resources */ = {isa = PBXBuildFile; fileRef = CDC25233307B82A000F6BA00 /* page.bundle.js */; };
+		CDC25247307B82A000F6BA00 /* content.bundle.js in Resources */ = {isa = PBXBuildFile; fileRef = CDC25234307B82A000F6BA00 /* content.bundle.js */; };
+		CDC25248307B82A000F6BA00 /* model.js in Resources */ = {isa = PBXBuildFile; fileRef = CDC25235307B82A000F6BA00 /* model.js */; };
+		CDC25249307B82A000F6BA00 /* popup.js in Resources */ = {isa = PBXBuildFile; fileRef = CDC25223307B82A000F6BA00 /* popup.js */; };
+		CDC2524A307B82A000F6BA00 /* content.css in Resources */ = {isa = PBXBuildFile; fileRef = CDC25224307B82A000F6BA00 /* content.css */; };
+		CDC2524D307B82A000F6BA00 /* background.js in Resources */ = {isa = PBXBuildFile; fileRef = CDC25227307B82A000F6BA00 /* background.js */; };
+		CDC2524E307B82A000F6BA00 /* popup.html in Resources */ = {isa = PBXBuildFile; fileRef = CDC25228307B82A000F6BA00 /* popup.html */; };
+		CDC25255307B82A000F6BA00 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = CDC2522F307B82A000F6BA00 /* manifest.json */; };
+		CDC25257307B82A000F6BA00 /* popup.css in Resources */ = {isa = PBXBuildFile; fileRef = CDC25231307B82A000F6BA00 /* popup.css */; };
+		CDC25259307B82A000F6BA00 /* page.bundle.js in Resources */ = {isa = PBXBuildFile; fileRef = CDC25233307B82A000F6BA00 /* page.bundle.js */; };
+		CDC2525A307B82A000F6BA00 /* content.bundle.js in Resources */ = {isa = PBXBuildFile; fileRef = CDC25234307B82A000F6BA00 /* content.bundle.js */; };
+		CDC2525B307B82A000F6BA00 /* model.js in Resources */ = {isa = PBXBuildFile; fileRef = CDC25235307B82A000F6BA00 /* model.js */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CDC251F6307B82A000F6BA00 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CDC251C3307B829F00F6BA00 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CDC251F3307B82A000F6BA00;
+			remoteInfo = "X Lens Extension (iOS)";
+		};
+		CDC25200307B82A000F6BA00 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CDC251C3307B829F00F6BA00 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CDC251FD307B82A000F6BA00;
+			remoteInfo = "X Lens Extension (macOS)";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CDC25217307B82A000F6BA00 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = PlugIns;
+			files = (
+				CDC251F5307B82A000F6BA00 /* X Lens Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+		};
+		CDC2521E307B82A000F6BA00 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = PlugIns;
+			files = (
+				CDC251FF307B82A000F6BA00 /* X Lens Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		CDC251CA307B829F00F6BA00 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = Base.lproj/Main.html; sourceTree = "<group>"; };
+		CDC251CB307B829F00F6BA00 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		CDC251CC307B829F00F6BA00 /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
+		CDC251CD307B829F00F6BA00 /* Script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Script.js; sourceTree = "<group>"; };
+		CDC251CE307B829F00F6BA00 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		CDC251CF307B82A000F6BA00 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CDC251D1307B82A000F6BA00 /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
+		CDC251D6307B82A000F6BA00 /* X Lens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "X Lens.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDC251D9307B82A000F6BA00 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		CDC251DB307B82A000F6BA00 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		CDC251DE307B82A000F6BA00 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		CDC251E1307B82A000F6BA00 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		CDC251E3307B82A000F6BA00 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CDC251E8307B82A000F6BA00 /* X Lens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "X Lens.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDC251EA307B82A000F6BA00 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		CDC251ED307B82A000F6BA00 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		CDC251EF307B82A000F6BA00 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CDC251F4307B82A000F6BA00 /* X Lens Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "X Lens Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDC251F9307B82A000F6BA00 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CDC251FE307B82A000F6BA00 /* X Lens Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "X Lens Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDC25203307B82A000F6BA00 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CDC25223307B82A000F6BA00 /* popup.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = popup.js; path = ../../../popup.js; sourceTree = "<group>"; };
+		CDC25224307B82A000F6BA00 /* content.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = content.css; path = ../../../content.css; sourceTree = "<group>"; };
+		CDC25227307B82A000F6BA00 /* background.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = background.js; path = ../../../background.js; sourceTree = "<group>"; };
+		CDC25228307B82A000F6BA00 /* popup.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = popup.html; path = ../../../popup.html; sourceTree = "<group>"; };
+		CDC2522F307B82A000F6BA00 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = ../../manifest.json; sourceTree = "<group>"; };
+		CDC25231307B82A000F6BA00 /* popup.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = popup.css; path = ../../../popup.css; sourceTree = "<group>"; };
+		CDC25233307B82A000F6BA00 /* page.bundle.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = page.bundle.js; path = ../../../page.bundle.js; sourceTree = "<group>"; };
+		CDC25234307B82A000F6BA00 /* content.bundle.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = content.bundle.js; path = ../../../content.bundle.js; sourceTree = "<group>"; };
+		CDC25235307B82A000F6BA00 /* model.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = model.js; path = ../../../model.js; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CDC251D3307B82A000F6BA00 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		CDC251E5307B82A000F6BA00 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		CDC251F1307B82A000F6BA00 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		CDC251FB307B82A000F6BA00 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CDC251C2307B829F00F6BA00 = {
+			isa = PBXGroup;
+			children = (
+				CDC251C7307B829F00F6BA00 /* Shared (App) */,
+				CDC251D0307B82A000F6BA00 /* Shared (Extension) */,
+				CDC251D8307B82A000F6BA00 /* iOS (App) */,
+				CDC251E9307B82A000F6BA00 /* macOS (App) */,
+				CDC251F8307B82A000F6BA00 /* iOS (Extension) */,
+				CDC25202307B82A000F6BA00 /* macOS (Extension) */,
+				CDC251D7307B82A000F6BA00 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CDC251C7307B829F00F6BA00 /* Shared (App) */ = {
+			isa = PBXGroup;
+			children = (
+				CDC251CE307B829F00F6BA00 /* ViewController.swift */,
+				CDC251CF307B82A000F6BA00 /* Assets.xcassets */,
+				CDC251C8307B829F00F6BA00 /* Resources */,
+			);
+			path = "Shared (App)";
+			sourceTree = "<group>";
+		};
+		CDC251C8307B829F00F6BA00 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CDC251C9307B829F00F6BA00 /* Main.html */,
+				CDC251CB307B829F00F6BA00 /* Icon.png */,
+				CDC251CC307B829F00F6BA00 /* Style.css */,
+				CDC251CD307B829F00F6BA00 /* Script.js */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		CDC251D0307B82A000F6BA00 /* Shared (Extension) */ = {
+			isa = PBXGroup;
+			children = (
+				CDC25222307B82A000F6BA00 /* Resources */,
+				CDC251D1307B82A000F6BA00 /* SafariWebExtensionHandler.swift */,
+			);
+			path = "Shared (Extension)";
+			sourceTree = "<group>";
+		};
+		CDC251D7307B82A000F6BA00 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CDC251D6307B82A000F6BA00 /* X Lens.app */,
+				CDC251E8307B82A000F6BA00 /* X Lens.app */,
+				CDC251F4307B82A000F6BA00 /* X Lens Extension.appex */,
+				CDC251FE307B82A000F6BA00 /* X Lens Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CDC251D8307B82A000F6BA00 /* iOS (App) */ = {
+			isa = PBXGroup;
+			children = (
+				CDC251D9307B82A000F6BA00 /* AppDelegate.swift */,
+				CDC251DB307B82A000F6BA00 /* SceneDelegate.swift */,
+				CDC251DD307B82A000F6BA00 /* LaunchScreen.storyboard */,
+				CDC251E0307B82A000F6BA00 /* Main.storyboard */,
+				CDC251E3307B82A000F6BA00 /* Info.plist */,
+			);
+			path = "iOS (App)";
+			sourceTree = "<group>";
+		};
+		CDC251E9307B82A000F6BA00 /* macOS (App) */ = {
+			isa = PBXGroup;
+			children = (
+				CDC251EA307B82A000F6BA00 /* AppDelegate.swift */,
+				CDC251EC307B82A000F6BA00 /* Main.storyboard */,
+				CDC251EF307B82A000F6BA00 /* Info.plist */,
+			);
+			path = "macOS (App)";
+			sourceTree = "<group>";
+		};
+		CDC251F8307B82A000F6BA00 /* iOS (Extension) */ = {
+			isa = PBXGroup;
+			children = (
+				CDC251F9307B82A000F6BA00 /* Info.plist */,
+			);
+			path = "iOS (Extension)";
+			sourceTree = "<group>";
+		};
+		CDC25202307B82A000F6BA00 /* macOS (Extension) */ = {
+			isa = PBXGroup;
+			children = (
+				CDC25203307B82A000F6BA00 /* Info.plist */,
+			);
+			path = "macOS (Extension)";
+			sourceTree = "<group>";
+		};
+		CDC25222307B82A000F6BA00 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CDC25223307B82A000F6BA00 /* popup.js */,
+				CDC25224307B82A000F6BA00 /* content.css */,
+				CDC25227307B82A000F6BA00 /* background.js */,
+				CDC25228307B82A000F6BA00 /* popup.html */,
+				CDC2522F307B82A000F6BA00 /* manifest.json */,
+				CDC25231307B82A000F6BA00 /* popup.css */,
+				CDC25233307B82A000F6BA00 /* page.bundle.js */,
+				CDC25234307B82A000F6BA00 /* content.bundle.js */,
+				CDC25235307B82A000F6BA00 /* model.js */,
+			);
+			name = Resources;
+			path = "Shared (Extension)";
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CDC251D5307B82A000F6BA00 /* X Lens (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CDC25218307B82A000F6BA00 /* Build configuration list for PBXNativeTarget "X Lens (iOS)" */;
+			buildPhases = (
+				CDC251D2307B82A000F6BA00 /* Sources */,
+				CDC251D3307B82A000F6BA00 /* Frameworks */,
+				CDC251D4307B82A000F6BA00 /* Resources */,
+				CDC25217307B82A000F6BA00 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CDC251F7307B82A000F6BA00 /* PBXTargetDependency */,
+			);
+			name = "X Lens (iOS)";
+			productName = "X Lens (iOS)";
+			productReference = CDC251D6307B82A000F6BA00 /* X Lens.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CDC251E7307B82A000F6BA00 /* X Lens (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CDC2521F307B82A000F6BA00 /* Build configuration list for PBXNativeTarget "X Lens (macOS)" */;
+			buildPhases = (
+				CDC251E4307B82A000F6BA00 /* Sources */,
+				CDC251E5307B82A000F6BA00 /* Frameworks */,
+				CDC251E6307B82A000F6BA00 /* Resources */,
+				CDC2521E307B82A000F6BA00 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CDC25201307B82A000F6BA00 /* PBXTargetDependency */,
+			);
+			name = "X Lens (macOS)";
+			productName = "X Lens (macOS)";
+			productReference = CDC251E8307B82A000F6BA00 /* X Lens.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CDC251F3307B82A000F6BA00 /* X Lens Extension (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CDC25214307B82A000F6BA00 /* Build configuration list for PBXNativeTarget "X Lens Extension (iOS)" */;
+			buildPhases = (
+				CDC251F0307B82A000F6BA00 /* Sources */,
+				CDC251F1307B82A000F6BA00 /* Frameworks */,
+				CDC251F2307B82A000F6BA00 /* Resources */,
+			);
+			buildRules = (
+			);
+			name = "X Lens Extension (iOS)";
+			productName = "X Lens Extension (iOS)";
+			productReference = CDC251F4307B82A000F6BA00 /* X Lens Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		CDC251FD307B82A000F6BA00 /* X Lens Extension (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CDC2521B307B82A000F6BA00 /* Build configuration list for PBXNativeTarget "X Lens Extension (macOS)" */;
+			buildPhases = (
+				CDC251FA307B82A000F6BA00 /* Sources */,
+				CDC251FB307B82A000F6BA00 /* Frameworks */,
+				CDC251FC307B82A000F6BA00 /* Resources */,
+			);
+			buildRules = (
+			);
+			name = "X Lens Extension (macOS)";
+			productName = "X Lens Extension (macOS)";
+			productReference = CDC251FE307B82A000F6BA00 /* X Lens Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CDC251C3307B829F00F6BA00 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2700;
+				LastUpgradeCheck = 2700;
+				TargetAttributes = {
+					CDC251D5307B82A000F6BA00 = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					CDC251E7307B82A000F6BA00 = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					CDC251F3307B82A000F6BA00 = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					CDC251FD307B82A000F6BA00 = {
+						CreatedOnToolsVersion = 27.0;
+					};
+				};
+			};
+			buildConfigurationList = CDC251C6307B829F00F6BA00 /* Build configuration list for PBXProject "X Lens" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CDC251C2307B829F00F6BA00;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = CDC251D7307B82A000F6BA00 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CDC251D5307B82A000F6BA00 /* X Lens (iOS) */,
+				CDC251E7307B82A000F6BA00 /* X Lens (macOS) */,
+				CDC251F3307B82A000F6BA00 /* X Lens Extension (iOS) */,
+				CDC251FD307B82A000F6BA00 /* X Lens Extension (macOS) */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CDC251D4307B82A000F6BA00 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+				CDC25206307B82A000F6BA00 /* Icon.png in Resources */,
+				CDC251DF307B82A000F6BA00 /* LaunchScreen.storyboard in Resources */,
+				CDC25204307B82A000F6BA00 /* Main.html in Resources */,
+				CDC2520A307B82A000F6BA00 /* Script.js in Resources */,
+				CDC2520E307B82A000F6BA00 /* Assets.xcassets in Resources */,
+				CDC251E2307B82A000F6BA00 /* Main.storyboard in Resources */,
+				CDC25208307B82A000F6BA00 /* Style.css in Resources */,
+			);
+		};
+		CDC251E6307B82A000F6BA00 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+				CDC25207307B82A000F6BA00 /* Icon.png in Resources */,
+				CDC25209307B82A000F6BA00 /* Style.css in Resources */,
+				CDC251EE307B82A000F6BA00 /* Main.storyboard in Resources */,
+				CDC2520B307B82A000F6BA00 /* Script.js in Resources */,
+				CDC2520F307B82A000F6BA00 /* Assets.xcassets in Resources */,
+				CDC25205307B82A000F6BA00 /* Main.html in Resources */,
+			);
+		};
+		CDC251F2307B82A000F6BA00 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+				CDC2524E307B82A000F6BA00 /* popup.html in Resources */,
+				CDC25259307B82A000F6BA00 /* page.bundle.js in Resources */,
+				CDC25249307B82A000F6BA00 /* popup.js in Resources */,
+				CDC25255307B82A000F6BA00 /* manifest.json in Resources */,
+				CDC25257307B82A000F6BA00 /* popup.css in Resources */,
+				CDC2525A307B82A000F6BA00 /* content.bundle.js in Resources */,
+				CDC2524A307B82A000F6BA00 /* content.css in Resources */,
+				CDC2525B307B82A000F6BA00 /* model.js in Resources */,
+				CDC2524D307B82A000F6BA00 /* background.js in Resources */,
+			);
+		};
+		CDC251FC307B82A000F6BA00 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+				CDC2523B307B82A000F6BA00 /* popup.html in Resources */,
+				CDC25246307B82A000F6BA00 /* page.bundle.js in Resources */,
+				CDC25236307B82A000F6BA00 /* popup.js in Resources */,
+				CDC25242307B82A000F6BA00 /* manifest.json in Resources */,
+				CDC25244307B82A000F6BA00 /* popup.css in Resources */,
+				CDC25247307B82A000F6BA00 /* content.bundle.js in Resources */,
+				CDC25237307B82A000F6BA00 /* content.css in Resources */,
+				CDC25248307B82A000F6BA00 /* model.js in Resources */,
+				CDC2523A307B82A000F6BA00 /* background.js in Resources */,
+			);
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CDC251D2307B82A000F6BA00 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				CDC2520C307B82A000F6BA00 /* ViewController.swift in Sources */,
+				CDC251DA307B82A000F6BA00 /* AppDelegate.swift in Sources */,
+				CDC251DC307B82A000F6BA00 /* SceneDelegate.swift in Sources */,
+			);
+		};
+		CDC251E4307B82A000F6BA00 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				CDC2520D307B82A000F6BA00 /* ViewController.swift in Sources */,
+				CDC251EB307B82A000F6BA00 /* AppDelegate.swift in Sources */,
+			);
+		};
+		CDC251F0307B82A000F6BA00 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				CDC25210307B82A000F6BA00 /* SafariWebExtensionHandler.swift in Sources */,
+			);
+		};
+		CDC251FA307B82A000F6BA00 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				CDC25211307B82A000F6BA00 /* SafariWebExtensionHandler.swift in Sources */,
+			);
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CDC251F7307B82A000F6BA00 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CDC251F3307B82A000F6BA00 /* X Lens Extension (iOS) */;
+			targetProxy = CDC251F6307B82A000F6BA00 /* PBXContainerItemProxy */;
+		};
+		CDC25201307B82A000F6BA00 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CDC251FD307B82A000F6BA00 /* X Lens Extension (macOS) */;
+			targetProxy = CDC25200307B82A000F6BA00 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		CDC251C9307B829F00F6BA00 /* Main.html */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CDC251CA307B829F00F6BA00 /* Base */,
+			);
+			name = Main.html;
+			sourceTree = "<group>";
+		};
+		CDC251DD307B82A000F6BA00 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CDC251DE307B82A000F6BA00 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		CDC251E0307B82A000F6BA00 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CDC251E1307B82A000F6BA00 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		CDC251EC307B82A000F6BA00 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CDC251ED307B82A000F6BA00 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		CDC25212307B82A000F6BA00 /* Debug configuration for PBXProject "X Lens" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CDC25213307B82A000F6BA00 /* Release configuration for PBXProject "X Lens" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		CDC25215307B82A000F6BA00 /* Debug configuration for PBXNativeTarget "X Lens Extension (iOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "X Lens Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.prakash09.xlens.Extension;
+				PRODUCT_NAME = "X Lens Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CDC25216307B82A000F6BA00 /* Release configuration for PBXNativeTarget "X Lens Extension (iOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "X Lens Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.prakash09.xlens.Extension;
+				PRODUCT_NAME = "X Lens Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CDC25219307B82A000F6BA00 /* Debug configuration for PBXNativeTarget "X Lens (iOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "X Lens";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.prakash09.xlens;
+				PRODUCT_NAME = "X Lens";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CDC2521A307B82A000F6BA00 /* Release configuration for PBXNativeTarget "X Lens (iOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "X Lens";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.prakash09.xlens;
+				PRODUCT_NAME = "X Lens";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CDC2521C307B82A000F6BA00 /* Debug configuration for PBXNativeTarget "X Lens Extension (macOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "X Lens Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.prakash09.xlens.Extension;
+				PRODUCT_NAME = "X Lens Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		CDC2521D307B82A000F6BA00 /* Release configuration for PBXNativeTarget "X Lens Extension (macOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "X Lens Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.prakash09.xlens.Extension;
+				PRODUCT_NAME = "X Lens Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		CDC25220307B82A000F6BA00 /* Debug configuration for PBXNativeTarget "X Lens (macOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "X Lens";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.prakash09.xlens;
+				PRODUCT_NAME = "X Lens";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		CDC25221307B82A000F6BA00 /* Release configuration for PBXNativeTarget "X Lens (macOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "X Lens";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.prakash09.xlens;
+				PRODUCT_NAME = "X Lens";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CDC251C6307B829F00F6BA00 /* Build configuration list for PBXProject "X Lens" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CDC25212307B82A000F6BA00 /* Debug configuration for PBXProject "X Lens" */,
+				CDC25213307B82A000F6BA00 /* Release configuration for PBXProject "X Lens" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		CDC25214307B82A000F6BA00 /* Build configuration list for PBXNativeTarget "X Lens Extension (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CDC25215307B82A000F6BA00 /* Debug configuration for PBXNativeTarget "X Lens Extension (iOS)" */,
+				CDC25216307B82A000F6BA00 /* Release configuration for PBXNativeTarget "X Lens Extension (iOS)" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		CDC25218307B82A000F6BA00 /* Build configuration list for PBXNativeTarget "X Lens (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CDC25219307B82A000F6BA00 /* Debug configuration for PBXNativeTarget "X Lens (iOS)" */,
+				CDC2521A307B82A000F6BA00 /* Release configuration for PBXNativeTarget "X Lens (iOS)" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		CDC2521B307B82A000F6BA00 /* Build configuration list for PBXNativeTarget "X Lens Extension (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CDC2521C307B82A000F6BA00 /* Debug configuration for PBXNativeTarget "X Lens Extension (macOS)" */,
+				CDC2521D307B82A000F6BA00 /* Release configuration for PBXNativeTarget "X Lens Extension (macOS)" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		CDC2521F307B82A000F6BA00 /* Build configuration list for PBXNativeTarget "X Lens (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CDC25220307B82A000F6BA00 /* Debug configuration for PBXNativeTarget "X Lens (macOS)" */,
+				CDC25221307B82A000F6BA00 /* Release configuration for PBXNativeTarget "X Lens (macOS)" */,
+			);
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CDC251C3307B829F00F6BA00 /* Project object */;
+	validationLevel = 1;
+}
