@@ -1,6 +1,6 @@
 # X Lens
 
-A Chrome extension that shows the country of each X account beside its name, and hides the posts and page sections you do not want to see.
+An extension for Chrome and Safari that shows the country of each X account beside its name, and hides the posts and page sections you do not want to see.
 
 <img src="docs/country-badge.png" alt="A post on X with a Canada badge beside the author name" width="600">
 
@@ -29,6 +29,18 @@ X Lens is not in the Chrome Web Store. Load it as an unpacked extension. You nee
 5. Open [x.com](https://x.com/home) and refresh the page. Click **Account filters** at the bottom left to change the settings.
 
 To update, replace the files in the folder with a new download. Then click the reload icon on X Lens in `chrome://extensions`.
+
+## Add it to Safari on Mac and iPhone
+
+X Lens is not in the App Store. Build it with Xcode on a Mac. You need Safari 18 or later on a Mac, or iOS 18 or later on an iPhone or iPad.
+
+1. Download and extract the ZIP as shown above. Open `safari/X Lens/X Lens.xcodeproj` in Xcode.
+2. Select each of the four targets, open **Signing & Capabilities**, and select your team.
+3. **Mac:** select the **X Lens (macOS)** scheme and click **Run**. Then open **Safari > Settings > Extensions** and turn on **X Lens**.
+4. **iPhone:** connect the iPhone, select the **X Lens (iOS)** scheme and your iPhone, and click **Run**. Then open **Settings > Apps > Safari > Extensions > X Lens** and turn on **Allow Extension**.
+5. Open [x.com](https://x.com/home) in Safari. When Safari asks, select **Always Allow on This Website**. Tap or click **Account filters** at the bottom left to change the settings.
+
+If Xcode reports that the bundle identifier is not available, change `com.prakash09.xlens` to your own identifier in each target. With a free Apple account, the iPhone app stops after 7 days. Run it from Xcode again to renew it.
 
 ## License
 
