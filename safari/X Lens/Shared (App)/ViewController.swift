@@ -16,7 +16,7 @@ import SafariServices
 typealias PlatformViewController = NSViewController
 #endif
 
-let extensionBundleIdentifier = "com.prakash09.xlens.Extension"
+let extensionBundleIdentifier = Bundle(url: Bundle.main.builtInPlugInsURL!.appendingPathComponent("X Lens Extension.appex"))!.bundleIdentifier!
 
 class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMessageHandler {
 
