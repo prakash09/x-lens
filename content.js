@@ -29,7 +29,7 @@
   function restoreCachedAccount(record) {
     if (!fresh(record) || !model.validHandle(record.handle)) return;
     const { bio, ...saved } = record;
-    accounts.set(saved.handle, { ...saved, bio: accounts.get(saved.handle)?.bio ?? null });
+    accounts.set(saved.handle, { ...saved, ...model.live(accounts.get(saved.handle)) });
   }
   function saveCache() {
     clearTimeout(saveTimer);
@@ -205,6 +205,10 @@
       ['bioKeywords', 'Hide accounts with bio keywords', 'venture, co-founder, investor'],
       ['hiddenCountries', 'Hide accounts based in', 'United States, South Asia'],
       ['shownCountries', 'Only show accounts based in', 'United States, South Asia'],
+      ['hiddenFollowers', 'Hide accounts with followers in', '<10, 500-2k, >1m'],
+      ['shownFollowers', 'Only show accounts with followers in', '100-50k'],
+      ['hiddenFollowing', 'Hide accounts with following in', '>2000'],
+      ['shownFollowing', 'Only show accounts with following in', '50-2000'],
     ];
     for (const [key, text, placeholder] of textFields) {
       const label = document.createElement('label');
@@ -217,7 +221,7 @@
       input.placeholder = placeholder;
       input.value = settings[key];
       input.addEventListener('input', () => {
-        settings = { ...settings, [key]: model.normalizeKeywords(input.value) };
+        settings = model.normalizeSettings({ ...settings, [key]: input.value });
         store({ settings });
         scheduleScan();
       });
@@ -276,12 +280,14 @@
         country: typeof account.country === 'string' ? account.country.slice(0, 120) : null,
         source: typeof account.source === 'string' ? account.source.slice(0, 120) : null,
         bio: typeof account.bio === 'string' ? account.bio.slice(0, 2000) : null,
+        followers: model.count(account.followers),
+        following: model.count(account.following),
         createdAt: typeof account.createdAt === 'string' && Number.isFinite(Date.parse(account.createdAt)) ? account.createdAt : null,
         observedAt: Math.min(account.observedAt, Date.now()),
         aboutChecked: account.aboutChecked === true,
       };
       const old = accounts.get(clean.handle);
-      if (clean.bio === null && fresh(old) && typeof old.bio === 'string') clean.bio = old.bio;
+      if (fresh(old)) model.keepLive(clean, old);
       if (fresh(old) && old.aboutChecked && !clean.aboutChecked) {
         clean.country = old.country;
         clean.source = old.source;

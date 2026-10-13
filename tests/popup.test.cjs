@@ -19,7 +19,7 @@ async function openPopup(saved) {
 test('all popup settings survive closing and recreating the popup', async () => {
   const saved = {};
   const first = await openPopup(saved);
-  const expected = { showCountry: false, minimumAgeMonths: 24, hideAndroid: true, hideIOS: true, hideWeb: true, hideForYou: true, hideNews: true, hideTrending: true, bioKeywords: 'venture, co-founder', hiddenCountries: 'India, South Asia', shownCountries: 'Canada' };
+  const expected = { showCountry: false, minimumAgeMonths: 24, hideAndroid: true, hideIOS: true, hideWeb: true, hideForYou: true, hideNews: true, hideTrending: true, bioKeywords: 'venture, co-founder', hiddenCountries: 'India, South Asia', shownCountries: 'Canada', hiddenFollowers: '<10, 500-2k', shownFollowers: '100-50k', hiddenFollowing: '>2000', shownFollowing: '50-2000' };
   try {
     for (const [key, value] of Object.entries(expected)) {
       const input = first.window.document.getElementById(key);

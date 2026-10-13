@@ -37,7 +37,7 @@
       if (model.validHandle(handle) && (value.core?.created_at || value.legacy?.created_at || value.about_profile || value.profile_bio || typeof value.legacy?.description === 'string')) {
         const record = model.parseAccount(value, handle);
         const old = observed.get(record.handle);
-        if (record.bio === null && typeof old?.bio === 'string') record.bio = old.bio;
+        model.keepLive(record, old);
         if (old?.aboutChecked && !record.aboutChecked) {
           record.country = old.country;
           record.source = old.source;
@@ -122,7 +122,7 @@
     const nextHandle = queue[0];
     const permit = await requestPermit(nextHandle);
     if (permit.account) {
-      const account = { ...permit.account, bio: observed.get(nextHandle)?.bio ?? null };
+      const account = { ...permit.account, ...model.live(observed.get(nextHandle)) };
       observed.set(nextHandle, account);
       emit('account', { account });
       queue.shift();
@@ -174,7 +174,7 @@
       const json = await response.json();
       const record = model.parseAccount(json?.data?.user_result_by_screen_name?.result, handle);
       if (!record) { emit('lookupFailed', { handle }); return; }
-      if (record.bio === null && typeof observed.get(handle)?.bio === 'string') record.bio = observed.get(handle).bio;
+      model.keepLive(record, observed.get(handle));
       observed.set(handle, record);
       emit('account', { account: record });
       status('Ready · account details stay in this browser');
@@ -208,7 +208,7 @@
       for (const record of (Array.isArray(event.data.cache) ? event.data.cache.slice(-1000) : [])) {
         if (model.validHandle(record.handle) && record.aboutChecked && Number.isFinite(record.observedAt) && Date.now() - record.observedAt < 31536000000) {
           const handle = record.handle.toLowerCase();
-          observed.set(handle, { ...record, handle, bio: observed.get(handle)?.bio ?? null });
+          observed.set(handle, { ...record, handle, ...model.live(observed.get(handle)) });
           emit('account', { account: observed.get(handle) });
         }
       }

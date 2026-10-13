@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 require('../model.js');
 const model = globalThis.XAccountModel;
 const now = Date.parse('2026-10-10T12:00:00Z');
-test('defaults leave optional filters off', () => assert.deepEqual(model.defaults, { showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideIOS: false, hideWeb: false, hideForYou: false, hideNews: false, hideTrending: false, bioKeywords: '', hiddenCountries: '', shownCountries: '' }));
+test('defaults leave optional filters off', () => assert.deepEqual(model.defaults, { showCountry: true, minimumAgeMonths: 0, hideAndroid: false, hideIOS: false, hideWeb: false, hideForYou: false, hideNews: false, hideTrending: false, bioKeywords: '', hiddenCountries: '', shownCountries: '', hiddenFollowers: '', shownFollowers: '', hiddenFollowing: '', shownFollowing: '' }));
 test('country flag uses reported country, regions stay neutral', () => {
   assert.equal(model.countryFlag('India'), '🇮🇳');
   assert.equal(model.countryFlag('United States'), '🇺🇸');
@@ -83,12 +83,50 @@ test('hidden countries match the whole name, ignoring case, spaces and hyphens',
   assert.deepEqual(model.reasons({ country: 'Côte d’Ivoire' }, { hiddenCountries: 'cote divoire' }), ['Based in Côte d’Ivoire']);
   assert.deepEqual(model.reasons({ country: 'India' }, model.defaults), []);
 });
+test('follower and following ranges cover below, above and between; unknown counts stay visible', () => {
+  const hidden = { hiddenFollowers: '<10, 500-2k, > 1.5M', hiddenFollowing: '>2000' };
+  for (const followers of [0, 9, 500, 2000, 1500001]) assert.deepEqual(model.reasons({ followers }, hidden), [`Followers: ${followers.toLocaleString('en-US')}`]);
+  for (const followers of [10, 499, 2001, 1500000, null, undefined]) assert.deepEqual(model.reasons({ followers, following: 2000 }, hidden), []);
+  assert.deepEqual(model.reasons({ followers: 5, following: 2001 }, hidden), ['Followers: 5', 'Following: 2,001']);
+  assert.deepEqual(model.reasons({ followers: 100 }, { hiddenFollowers: '<=100' }), ['Followers: 100']);
+  assert.deepEqual(model.reasons({ following: 100 }, { hiddenFollowing: '>=101, 0' }), []);
+  assert.deepEqual(model.reasons({ following: 0 }, { hiddenFollowing: '>=101, 0' }), ['Following: 0']);
+});
+test('shown ranges hide every other known count; unreadable ranges have no effect', () => {
+  const shown = { shownFollowers: '100-50k', shownFollowing: '<2000' };
+  for (const account of [{ followers: 100, following: 1999 }, { followers: 50000 }, {}]) assert.deepEqual(model.reasons(account, shown), []);
+  assert.deepEqual(model.reasons({ followers: 99, following: 2000 }, shown), ['Followers: 99', 'Following: 2,000']);
+  assert.deepEqual(model.reasons({ followers: 150 }, { shownFollowers: '100-50k', hiddenFollowers: '100-200' }), ['Followers: 150']);
+  for (const text of ['', ' , ', 'many', '10-', '-10', '1-2-3', '<', '10+']) {
+    assert.deepEqual(model.reasons({ followers: 5, following: 5 }, { hiddenFollowers: text, shownFollowing: text }), [], text);
+  }
+});
+test('ranges accept thousands separators, decimals, reversed ends and long dashes', () => {
+  const hides = (hiddenFollowers, followers) => model.reasons({ followers }, { hiddenFollowers }).length === 1;
+  assert.equal(model.normalizeSettings({ hiddenFollowers: '>10,000, 1,000-5,000' }).hiddenFollowers, '>10000, 1000-5000');
+  assert.deepEqual([11, 10000, 10001].map(count => hides('>10,000', count)), [false, false, true]);
+  assert.deepEqual([999, 1000, 5000, 5001].map(count => hides('1,000-5,000', count)), [false, true, true, false]);
+  assert.deepEqual([1, 2].map(count => hides('>1.5', count)), [false, true]);
+  assert.deepEqual([1, 2].map(count => hides('<1.2', count)), [true, false]);
+  assert.deepEqual([29400, 29401].map(count => hides('>29.4k', count)), [false, true]);
+  assert.deepEqual([499, 500, 1000, 1001].map(count => hides('1k–500', count)), [false, true, true, false]);
+  assert.deepEqual([1e9, 1e9 + 1].map(count => hides('>1B', count)), [false, true]);
+});
+test('parse account reads counts from X; a response without counts keeps the last ones', () => {
+  const user = { core: { screen_name: 'ScyllaDB' }, legacy: { followers_count: 29412, friends_count: 232 } };
+  const account = model.parseAccount(user, 'scylladb');
+  assert.deepEqual([account.followers, account.following], [29412, 232]);
+  const about = model.parseAccount({ core: user.core, about_profile: { source: 'Web' }, legacy: { followers_count: -1, friends_count: '232' } }, 'scylladb');
+  assert.deepEqual([about.followers, about.following], [null, null]);
+  assert.deepEqual(model.live(model.keepLive(about, account)), { bio: null, followers: 29412, following: 232 });
+  assert.deepEqual(model.live(undefined), { bio: null, followers: null, following: null });
+});
 test('lookups stay on for a country filter alone', () => {
   const quiet = { ...model.defaults, showCountry: false };
   assert.equal(model.needsAbout(quiet), false);
   assert.equal(model.needsAbout({ ...quiet, hiddenCountries: 'India' }), true);
   assert.equal(model.needsAbout({ ...quiet, shownCountries: 'India' }), true);
-  assert.equal(model.needsAbout({ ...quiet, bioKeywords: 'venture', minimumAgeMonths: 6 }), false);
+  assert.equal(model.needsAbout({ ...quiet, bioKeywords: 'venture', minimumAgeMonths: 6, hiddenFollowers: '<10', shownFollowing: '<2000' }), false);
 });
 test('shown countries hide every other known country; unknown countries stay visible', () => {
   const settings = { shownCountries: 'south-asia, United States' };

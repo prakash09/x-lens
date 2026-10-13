@@ -47,6 +47,18 @@ test('lookup stays on X, projects fields and never passes session headers to iso
     assert.equal(JSON.stringify(messages).includes('Bearer'), false);
   } finally { dom.window.close(); }
 });
+test('an About lookup without counts keeps the counts from the timeline', async () => {
+  const timeline = { data: { user: { result: { core: { screen_name: 'ScyllaDB', created_at: '2009-06-01' }, legacy: { followers_count: 29412, friends_count: 232 } } } } };
+  const about = { data: { user_result_by_screen_name: { result: { core: { screen_name: 'ScyllaDB' }, about_profile: { account_based_in: 'United States', source: 'Web' } } } } };
+  const { dom, window, messages, lookup } = setup(input => new Response(JSON.stringify(String(input).includes('AboutAccountQuery') ? about : timeline)));
+  try {
+    await window.fetch('/i/api/graphql/test/HomeTimeline', { headers: { authorization: 'Bearer test-client-header' } });
+    lookup('ScyllaDB');
+    await pause(1100);
+    const { country, followers, following } = messages.filter(message => message.type === 'account').at(-1).account;
+    assert.deepEqual([country, followers, following], ['United States', 29412, 232]);
+  } finally { dom.window.close(); }
+});
 test('429 pauses queue and broadcasts cooldown without assigning country', async () => {
   const { dom, requests, messages, lookup } = setup(() => new Response('{}', { status: 429 }));
   try {
@@ -109,13 +121,14 @@ test('worker cached permit skips HTTP and restores the country', async () => {
 });
 
 test('native hover-card response supplies a bio without an extension request', async () => {
-  const fixture = { data: { user: { result: { core: { screen_name: 'AlokVasudev' }, profile_bio: { description: 'venture guy (co-founder at standard)' } } } } };
+  const fixture = { data: { user: { result: { core: { screen_name: 'AlokVasudev' }, profile_bio: { description: 'venture guy (co-founder at standard)' }, legacy: { followers_count: 29412, friends_count: 232 } } } } };
   const { dom, window, requests, messages, lookup } = setup(() => new Response(JSON.stringify(fixture)));
   try {
     window.dispatchEvent(new window.MessageEvent('message', { origin: window.location.origin, source: window, data: { channel: 'x-account-context-v1', type: 'configure', settings: { showCountry: false, bioKeywords: 'venture' } } }));
     await window.fetch('/i/api/graphql/test/UserByScreenName', { headers: { authorization: 'Bearer test-client-header' } });
     await pause(80);
-    assert.equal(messages.find(message => message.type === 'account').account.bio, 'venture guy (co-founder at standard)');
+    const { bio, followers, following } = messages.find(message => message.type === 'account').account;
+    assert.deepEqual([bio, followers, following], ['venture guy (co-founder at standard)', 29412, 232]);
     lookup('AlokVasudev');
     await pause(1100);
     assert.equal(requests.length, 1);
