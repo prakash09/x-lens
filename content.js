@@ -221,7 +221,7 @@
       input.placeholder = placeholder;
       input.value = settings[key];
       input.addEventListener('input', () => {
-        settings = { ...settings, [key]: model.normalizeKeywords(input.value) };
+        settings = model.normalizeSettings({ ...settings, [key]: input.value });
         store({ settings });
         scheduleScan();
       });

@@ -67,3 +67,9 @@ test('shared cache excludes bios and removes bios stored by older versions', asy
   assert.equal(budget.stored.cache[0].country, 'India');
   assert.equal(Object.hasOwn(budget.stored.cache[0], 'bio'), false);
 });
+test('shared cache excludes follower and following counts', async () => {
+  const budget = setup();
+  await budget.message({ type: 'cacheAccounts', accounts: [{ handle: 'example', followers: 7, following: 2431, country: 'India', aboutChecked: true, observedAt: 1800000000000 }] });
+  assert.deepEqual(Object.keys(budget.stored.cache[0]).filter(key => /^follow/.test(key)), []);
+  assert.equal((await budget.reserve()).account.followers, undefined);
+});

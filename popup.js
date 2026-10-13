@@ -8,7 +8,7 @@
     else if (input.type === 'text') input.value = settings[key];
     else input.checked = settings[key];
     input.addEventListener(input.type === 'text' ? 'input' : 'change', async () => {
-      settings = { ...settings, [key]: input.tagName === 'SELECT' ? Number(input.value) : input.type === 'text' ? globalThis.XAccountModel.normalizeKeywords(input.value) : input.checked };
+      settings = globalThis.XAccountModel.normalizeSettings({ ...settings, [key]: input.tagName === 'SELECT' ? Number(input.value) : input.type === 'text' ? input.value : input.checked });
       await chrome.storage.local.set({ settings });
       document.getElementById('status').textContent = 'Saved. Open X pages update automatically.';
     });

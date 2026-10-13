@@ -34,25 +34,29 @@
   }
   function normalizeSettings(value = {}) {
     const months = value.minimumAgeMonths ?? (value.hideRecent ? 6 : 0);
-    return { showCountry: value.showCountry !== false, minimumAgeMonths: Object.hasOwn(ageOptions, months) ? Number(months) : 0, hideAndroid: value.hideAndroid === true, hideIOS: value.hideIOS === true, hideWeb: value.hideWeb === true, hideForYou: value.hideForYou === true, hideNews: value.hideNews === true, hideTrending: value.hideTrending === true, bioKeywords: normalizeKeywords(value.bioKeywords), hiddenCountries: normalizeKeywords(value.hiddenCountries), shownCountries: normalizeKeywords(value.shownCountries), hiddenFollowers: normalizeKeywords(value.hiddenFollowers), shownFollowers: normalizeKeywords(value.shownFollowers), hiddenFollowing: normalizeKeywords(value.hiddenFollowing), shownFollowing: normalizeKeywords(value.shownFollowing) };
+    return { showCountry: value.showCountry !== false, minimumAgeMonths: Object.hasOwn(ageOptions, months) ? Number(months) : 0, hideAndroid: value.hideAndroid === true, hideIOS: value.hideIOS === true, hideWeb: value.hideWeb === true, hideForYou: value.hideForYou === true, hideNews: value.hideNews === true, hideTrending: value.hideTrending === true, bioKeywords: normalizeKeywords(value.bioKeywords), hiddenCountries: normalizeKeywords(value.hiddenCountries), shownCountries: normalizeKeywords(value.shownCountries), hiddenFollowers: normalizeRanges(value.hiddenFollowers), shownFollowers: normalizeRanges(value.shownFollowers), hiddenFollowing: normalizeRanges(value.hiddenFollowing), shownFollowing: normalizeRanges(value.shownFollowing) };
   }
   const needsAbout = settings => !!(settings.showCountry || settings.hideAndroid || settings.hideIOS || settings.hideWeb || settings.hiddenCountries || settings.shownCountries);
   // South Asia, south-asia and SOUTHASIA are one name.
   const countryKey = value => typeof value === 'string' ? value.normalize('NFKD').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '') : '';
   const countryKeys = value => normalizeKeywords(value).split(', ').map(countryKey).filter(Boolean);
+  // "10,000" is one number, not two list items.
+  const normalizeRanges = value => normalizeKeywords(typeof value === 'string' ? value.replace(/(\d),(?=\d{3}(?!\d))/g, '$1') : value);
   function amount(text) {
-    const [, digits, unit] = /^(\d+(?:\.\d+)?)([km]?)$/.exec(text) || [];
-    return digits ? Math.round(digits * ({ k: 1e3, m: 1e6 }[unit] || 1)) : NaN;
+    const [, digits, unit] = /^(\d+(?:\.\d+)?)([kmb]?)$/.exec(text) || [];
+    // toFixed removes float noise: 29.4 * 1000 is 29399.999999999996.
+    return digits ? Number((digits * ({ k: 1e3, m: 1e6, b: 1e9 }[unit] || 1)).toFixed(3)) : NaN;
   }
   // "<10", ">2k", "500-2000" and "0" become inclusive [low, high] pairs.
   function countRange(text) {
     const [, sign, limit] = /^([<>]=?)(.+)$/.exec(text) || [];
-    if (sign) return { '<': [0, amount(limit) - 1], '<=': [0, amount(limit)], '>': [amount(limit) + 1, Infinity], '>=': [amount(limit), Infinity] }[sign];
+    const edge = amount(limit);
+    if (sign) return { '<': [0, Math.ceil(edge) - 1], '<=': [0, edge], '>': [Math.floor(edge) + 1, Infinity], '>=': [edge, Infinity] }[sign];
     const ends = text.split('-').map(amount);
-    return ends.length > 2 ? [NaN, NaN] : [ends[0], ends.at(-1)];
+    return ends.length > 2 ? [NaN, NaN] : [Math.min(...ends), Math.max(...ends)];
   }
   // A range that X Lens cannot read has no effect.
-  const countRanges = value => normalizeKeywords(value).split(', ').map(text => countRange(text.replace(/\s/g, '').toLowerCase())).filter(([low, high]) => low <= high);
+  const countRanges = value => normalizeRanges(value).split(', ').map(text => countRange(text.replace(/\s/g, '').replace(/[–—]/g, '-').toLowerCase())).filter(([low, high]) => low <= high);
   const countFilters = [['followers', 'hiddenFollowers', 'shownFollowers', 'Followers'], ['following', 'hiddenFollowing', 'shownFollowing', 'Following']];
   function monthsAgo(now, months) {
     const date = new Date(now);

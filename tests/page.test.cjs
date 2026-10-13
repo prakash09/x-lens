@@ -47,6 +47,18 @@ test('lookup stays on X, projects fields and never passes session headers to iso
     assert.equal(JSON.stringify(messages).includes('Bearer'), false);
   } finally { dom.window.close(); }
 });
+test('an About lookup without counts keeps the counts from the timeline', async () => {
+  const timeline = { data: { user: { result: { core: { screen_name: 'ScyllaDB', created_at: '2009-06-01' }, legacy: { followers_count: 29412, friends_count: 232 } } } } };
+  const about = { data: { user_result_by_screen_name: { result: { core: { screen_name: 'ScyllaDB' }, about_profile: { account_based_in: 'United States', source: 'Web' } } } } };
+  const { dom, window, messages, lookup } = setup(input => new Response(JSON.stringify(String(input).includes('AboutAccountQuery') ? about : timeline)));
+  try {
+    await window.fetch('/i/api/graphql/test/HomeTimeline', { headers: { authorization: 'Bearer test-client-header' } });
+    lookup('ScyllaDB');
+    await pause(1100);
+    const { country, followers, following } = messages.filter(message => message.type === 'account').at(-1).account;
+    assert.deepEqual([country, followers, following], ['United States', 29412, 232]);
+  } finally { dom.window.close(); }
+});
 test('429 pauses queue and broadcasts cooldown without assigning country', async () => {
   const { dom, requests, messages, lookup } = setup(() => new Response('{}', { status: 429 }));
   try {

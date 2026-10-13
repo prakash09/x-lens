@@ -97,9 +97,20 @@ test('shown ranges hide every other known count; unreadable ranges have no effec
   for (const account of [{ followers: 100, following: 1999 }, { followers: 50000 }, {}]) assert.deepEqual(model.reasons(account, shown), []);
   assert.deepEqual(model.reasons({ followers: 99, following: 2000 }, shown), ['Followers: 99', 'Following: 2,000']);
   assert.deepEqual(model.reasons({ followers: 150 }, { shownFollowers: '100-50k', hiddenFollowers: '100-200' }), ['Followers: 150']);
-  for (const text of ['', ' , ', 'many', '10-', '-10', '1-2-3', '20-10', '<']) {
+  for (const text of ['', ' , ', 'many', '10-', '-10', '1-2-3', '<', '10+']) {
     assert.deepEqual(model.reasons({ followers: 5, following: 5 }, { hiddenFollowers: text, shownFollowing: text }), [], text);
   }
+});
+test('ranges accept thousands separators, decimals, reversed ends and long dashes', () => {
+  const hides = (hiddenFollowers, followers) => model.reasons({ followers }, { hiddenFollowers }).length === 1;
+  assert.equal(model.normalizeSettings({ hiddenFollowers: '>10,000, 1,000-5,000' }).hiddenFollowers, '>10000, 1000-5000');
+  assert.deepEqual([11, 10000, 10001].map(count => hides('>10,000', count)), [false, false, true]);
+  assert.deepEqual([999, 1000, 5000, 5001].map(count => hides('1,000-5,000', count)), [false, true, true, false]);
+  assert.deepEqual([1, 2].map(count => hides('>1.5', count)), [false, true]);
+  assert.deepEqual([1, 2].map(count => hides('<1.2', count)), [true, false]);
+  assert.deepEqual([29400, 29401].map(count => hides('>29.4k', count)), [false, true]);
+  assert.deepEqual([499, 500, 1000, 1001].map(count => hides('1k–500', count)), [false, true, true, false]);
+  assert.deepEqual([1e9, 1e9 + 1].map(count => hides('>1B', count)), [false, true]);
 });
 test('parse account reads counts from X; a response without counts keeps the last ones', () => {
   const user = { core: { screen_name: 'ScyllaDB' }, legacy: { followers_count: 29412, friends_count: 232 } };

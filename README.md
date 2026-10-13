@@ -11,13 +11,30 @@ An extension for Chrome and Safari that shows the country of each X account besi
 - **Hides accounts by bio keyword.** Enter words or phrases with commas between them, for example `venture, co-founder, investor`.
 - **Hides accounts by country.** Enter countries or regions with commas between them, for example `United States, South Asia`. The match ignores case, spaces, and hyphens.
 - **Shows only the countries you select.** Enter a second list to hide accounts based in all other countries or regions.
-- **Hides accounts by follower count.** Enter ranges with commas between them, for example `<10, 500-2k, >1m`. `<10` is below 10, `>1m` is above 1 million, and `500-2k` is 500 to 2,000.
+- **Hides accounts by follower count.** Enter ranges with commas between them, for example `<10, 500-2k, >1m`.
 - **Hides accounts by following count.** The same format applies to the number of accounts that an account follows, for example `>2000`.
 - **Shows only the counts you select.** Enter a second range list to hide accounts with any other follower or following count.
 - **Hides new accounts.** Hide accounts younger than 6 months, 1 year, 2 years, or 5 years.
 - **Hides distractions.** Remove the **For you** tab, **Today's News**, and **What's happening**.
 
 Each hidden post has a **Show post** button. Accounts with unknown details stay visible. Settings are saved in your browser.
+
+### Range format
+
+Use this format in the four follower and following fields.
+
+| You enter | Accounts that match |
+|---|---|
+| `<10` | Fewer than 10 |
+| `>2000` | More than 2,000 |
+| `500-2k` | From 500 to 2,000 |
+| `<=100`, `>=100` | 100 is included |
+| `0` | Exactly 0 |
+
+- `k`, `m`, and `b` mean thousand, million, and billion. `1.5m` is 1,500,000.
+- `10,000` is one number. Put a space after each comma that separates two ranges.
+- X Lens reads the counts from the data that X sends with each post. It sends no extra requests and does not save the counts.
+- A range that X Lens cannot read has no effect.
 
 <img src="docs/settings-panel.png" alt="X Lens settings panel on X" width="320">
 
