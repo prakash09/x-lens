@@ -118,6 +118,8 @@ test('parse account reads counts from X; a response without counts keeps the las
   assert.deepEqual([account.followers, account.following], [29412, 232]);
   const older = model.parseAccount({ core: user.core, legacy: { followers_count: 7, friends_count: 2100 } }, 'scylladb');
   assert.deepEqual([older.followers, older.following], [7, 2100]);
+  const mixed = model.parseAccount({ core: user.core, relationship_counts: { followers: 0, following: '232' }, legacy: { followers_count: 7, friends_count: 2100 } }, 'scylladb');
+  assert.deepEqual([mixed.followers, mixed.following], [0, null]);
   const about = model.parseAccount({ core: user.core, about_profile: { source: 'Web' }, legacy: { followers_count: -1, friends_count: '232' } }, 'scylladb');
   assert.deepEqual([about.followers, about.following], [null, null]);
   assert.deepEqual(model.live(model.keepLive(about, account)), { bio: null, followers: 29412, following: 232 });
