@@ -113,9 +113,11 @@ test('ranges accept thousands separators, decimals, reversed ends and long dashe
   assert.deepEqual([1e9, 1e9 + 1].map(count => hides('>1B', count)), [false, true]);
 });
 test('parse account reads counts from X; a response without counts keeps the last ones', () => {
-  const user = { core: { screen_name: 'ScyllaDB' }, legacy: { followers_count: 29412, friends_count: 232 } };
+  const user = { core: { screen_name: 'ScyllaDB' }, relationship_counts: { followers: 29412, following: 232 } };
   const account = model.parseAccount(user, 'scylladb');
   assert.deepEqual([account.followers, account.following], [29412, 232]);
+  const older = model.parseAccount({ core: user.core, legacy: { followers_count: 7, friends_count: 2100 } }, 'scylladb');
+  assert.deepEqual([older.followers, older.following], [7, 2100]);
   const about = model.parseAccount({ core: user.core, about_profile: { source: 'Web' }, legacy: { followers_count: -1, friends_count: '232' } }, 'scylladb');
   assert.deepEqual([about.followers, about.following], [null, null]);
   assert.deepEqual(model.live(model.keepLive(about, account)), { bio: null, followers: 29412, following: 232 });
