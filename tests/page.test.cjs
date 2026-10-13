@@ -109,13 +109,14 @@ test('worker cached permit skips HTTP and restores the country', async () => {
 });
 
 test('native hover-card response supplies a bio without an extension request', async () => {
-  const fixture = { data: { user: { result: { core: { screen_name: 'AlokVasudev' }, profile_bio: { description: 'venture guy (co-founder at standard)' } } } } };
+  const fixture = { data: { user: { result: { core: { screen_name: 'AlokVasudev' }, profile_bio: { description: 'venture guy (co-founder at standard)' }, legacy: { followers_count: 29412, friends_count: 232 } } } } };
   const { dom, window, requests, messages, lookup } = setup(() => new Response(JSON.stringify(fixture)));
   try {
     window.dispatchEvent(new window.MessageEvent('message', { origin: window.location.origin, source: window, data: { channel: 'x-account-context-v1', type: 'configure', settings: { showCountry: false, bioKeywords: 'venture' } } }));
     await window.fetch('/i/api/graphql/test/UserByScreenName', { headers: { authorization: 'Bearer test-client-header' } });
     await pause(80);
-    assert.equal(messages.find(message => message.type === 'account').account.bio, 'venture guy (co-founder at standard)');
+    const { bio, followers, following } = messages.find(message => message.type === 'account').account;
+    assert.deepEqual([bio, followers, following], ['venture guy (co-founder at standard)', 29412, 232]);
     lookup('AlokVasudev');
     await pause(1100);
     assert.equal(requests.length, 1);

@@ -11,6 +11,9 @@ An extension for Chrome and Safari that shows the country of each X account besi
 - **Hides accounts by bio keyword.** Enter words or phrases with commas between them, for example `venture, co-founder, investor`.
 - **Hides accounts by country.** Enter countries or regions with commas between them, for example `United States, South Asia`. The match ignores case, spaces, and hyphens.
 - **Shows only the countries you select.** Enter a second list to hide accounts based in all other countries or regions.
+- **Hides accounts by follower count.** Enter ranges with commas between them, for example `<10, 500-2k, >1m`. `<10` is below 10, `>1m` is above 1 million, and `500-2k` is 500 to 2,000.
+- **Hides accounts by following count.** The same format applies to the number of accounts that an account follows, for example `>2000`.
+- **Shows only the counts you select.** Enter a second range list to hide accounts with any other follower or following count.
 - **Hides new accounts.** Hide accounts younger than 6 months, 1 year, 2 years, or 5 years.
 - **Hides distractions.** Remove the **For you** tab, **Today's News**, and **What's happening**.
 

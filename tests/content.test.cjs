@@ -14,7 +14,7 @@ async function setup(saved = {}) {
   window.document.head.append(style);
   let listener;
   window.Intl.DisplayNames = Intl.DisplayNames;
-  window.chrome = { runtime: { sendMessage: async () => ({ allowed: false }) }, storage: { local: { get: async () => saved, set: async values => { Object.assign(saved, JSON.parse(JSON.stringify(values))); } }, onChanged: { addListener: fn => { listener = fn; } } } };
+  window.chrome = { runtime: { sendMessage: async () => ({ allowed: false }) }, storage: { local: { get: async () => saved, set: async values => { Object.assign(saved, JSON.parse(JSON.stringify(values))); } }, onChanged: { addListener: fn => { listener = fn; }, get listener() { return listener; } } } };
   for (const file of ['content.bundle.js']) window.eval(fs.readFileSync(path.join(root, file), 'utf8'));
   await pause(180);
   const record = (handle, source, createdAt, country = 'India', bio = null) => window.dispatchEvent(new window.MessageEvent('message', { origin: window.location.origin, source: window, data: { channel: 'x-account-context-v1', type: 'account', account: { handle, source, createdAt, country, bio, observedAt: Date.now(), aboutChecked: true } } }));
@@ -214,6 +214,31 @@ test('bio filter hides a matching quote, updates live and preserves a bio omitte
     await settings({ bioKeywords: 'engineer', showCountry: false });
     assert.equal(window.document.getElementById('post').hasAttribute('data-xac-hidden'), true);
     await settings({ bioKeywords: '' });
+    assert.equal(window.document.querySelectorAll('[data-xac-hidden]').length, 0);
+  } finally { dom.window.close(); }
+});
+
+test('count filter hides a matching quote, keeps counts omitted by About and by the saved cache', async () => {
+  const saved = { settings: { showCountry: false, hiddenFollowers: '<10', hiddenFollowing: '>2000' } };
+  const { dom, window, record, settings } = await setup(saved);
+  const counts = (handle, followers, following) => window.dispatchEvent(new window.MessageEvent('message', { origin: window.location.origin, source: window, data: { channel: 'x-account-context-v1', type: 'account', account: { handle, followers, following, observedAt: Date.now() } } }));
+  try {
+    counts('oldauthor', 29412, 232);
+    counts('newauthor', 7, 2431);
+    await pause(180);
+    const post = window.document.getElementById('post');
+    const quote = window.document.getElementById('quote');
+    assert.equal(post.hasAttribute('data-xac-hidden'), false);
+    assert.equal(quote.querySelector('.xac-placeholder span').textContent, 'Hidden @newauthor · Followers: 7 · Following: 2,431');
+    record('newauthor', 'Web', '2009-06-01');
+    window.chrome.storage.onChanged.listener({ cache: { newValue: [{ handle: 'newauthor', country: 'India', aboutChecked: true, observedAt: Date.now() }] } }, 'local');
+    await pause(180);
+    assert.equal(quote.hasAttribute('data-xac-hidden'), true);
+    await settings({ showCountry: false, shownFollowers: '<10' });
+    assert.equal(post.querySelector('.xac-placeholder span').textContent, 'Hidden @oldauthor · Followers: 29,412');
+    assert.equal(quote.hasAttribute('data-xac-hidden'), false);
+    assert.equal(window.document.querySelector('#xac-controls input[data-setting="shownFollowers"]').value, '<10');
+    await settings({ showCountry: false });
     assert.equal(window.document.querySelectorAll('[data-xac-hidden]').length, 0);
   } finally { dom.window.close(); }
 });
