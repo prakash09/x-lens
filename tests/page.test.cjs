@@ -48,7 +48,7 @@ test('lookup stays on X, projects fields and never passes session headers to iso
   } finally { dom.window.close(); }
 });
 test('an About lookup without counts keeps the counts from the timeline', async () => {
-  const timeline = { data: { user: { result: { core: { screen_name: 'ScyllaDB', created_at: '2009-06-01' }, legacy: { followers_count: 29412, friends_count: 232 } } } } };
+  const timeline = { data: { user: { result: { core: { screen_name: 'ScyllaDB', created_at: '2009-06-01' }, relationship_counts: { followers: 29412, following: 232 } } } } };
   const about = { data: { user_result_by_screen_name: { result: { core: { screen_name: 'ScyllaDB' }, about_profile: { account_based_in: 'United States', source: 'Web' } } } } };
   const { dom, window, messages, lookup } = setup(input => new Response(JSON.stringify(String(input).includes('AboutAccountQuery') ? about : timeline)));
   try {
@@ -121,7 +121,7 @@ test('worker cached permit skips HTTP and restores the country', async () => {
 });
 
 test('native hover-card response supplies a bio without an extension request', async () => {
-  const fixture = { data: { user: { result: { core: { screen_name: 'AlokVasudev' }, profile_bio: { description: 'venture guy (co-founder at standard)' }, legacy: { followers_count: 29412, friends_count: 232 } } } } };
+  const fixture = { data: { user: { result: { core: { screen_name: 'AlokVasudev' }, profile_bio: { description: 'venture guy (co-founder at standard)' }, relationship_counts: { followers: 29412, following: 232 } } } } };
   const { dom, window, requests, messages, lookup } = setup(() => new Response(JSON.stringify(fixture)));
   try {
     window.dispatchEvent(new window.MessageEvent('message', { origin: window.location.origin, source: window, data: { channel: 'x-account-context-v1', type: 'configure', settings: { showCountry: false, bioKeywords: 'venture' } } }));
